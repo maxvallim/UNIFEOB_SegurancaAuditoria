@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo Robusto de Segurança em Nível de Linha no SQL Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 5px;
+            display: block;
+            margin: 10px 0;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exemplo Robusto de Segurança em Nível de Linha no SQL Server</h1>
+    <h2>O que é Segurança em Nível de Linha (RLS)?</h2>
+    <p>
+        A <strong>Segurança em Nível de Linha (RLS)</strong> é uma funcionalidade que permite controlar o acesso aos dados em um banco de dados de forma granular. Isso significa que você pode definir exatamente quais linhas de dados cada usuário específico pode visualizar ou modificar. Essa abordagem é essencial para garantir que dados sensíveis sejam acessados apenas por usuários autorizados, aumentando a segurança e a privacidade dos dados.
+    </p>
+    <h3>Como Funciona a RLS?</h3>
+    <p>
+        A RLS funciona aplicando filtros de segurança que determinam quais linhas de dados são visíveis para cada usuário. Esses filtros são baseados em regras definidas pelo administrador do banco de dados. Aqui estão os principais componentes da RLS:
+    </p>
+    <ul>
+        <li><strong>Funções de Segurança</strong>: As funções de segurança são criadas para definir as regras de acesso. Essas funções podem ser baseadas em atributos do usuário, como seu ID, departamento ou função na organização.</li>
+        <li><strong>Políticas de Segurança</strong>: As políticas de segurança aplicam as funções de segurança às tabelas específicas. Elas garantem que os filtros definidos nas funções sejam aplicados automaticamente quando um usuário consulta a tabela.</li>
+    </ul>
+    <h3>Benefícios da RLS</h3>
+    <ul>
+        <li><strong>Controle Granular</strong>: Permite um controle detalhado sobre quem pode acessar quais dados, aumentando a segurança.</li>
+        <li><strong>Conformidade</strong>: Ajuda a cumprir regulamentações de privacidade e segurança de dados, como a GDPR.</li>
+        <li><strong>Simplicidade</strong>: Facilita a gestão de permissões, pois as regras são centralizadas e aplicadas automaticamente.</li>
+    </ul>
+    <h2>Exemplo de Implementação de RLS no SQL Server</h2>
+    <h3>1. Criação da Tabela e Inserção de Dados</h3>
+    <code>
+        CREATE TABLE Vendas (
+            VendaID INT PRIMARY KEY,
+            VendedorID INT,
+            Produto VARCHAR(50),
+            Quantidade INT,
+            Valor DECIMAL(10, 2)
+        );
+        INSERT INTO Vendas (VendaID, VendedorID, Produto, Quantidade, Valor) VALUES
+        (1, 101, 'Produto A', 10, 100.00),
+        (2, 102, 'Produto B', 5, 50.00),
+        (3, 101, 'Produto C', 7, 70.00),
+        (4, 103, 'Produto D', 3, 30.00);
+    </code>
+    <h3>2. Criação da Tabela de Usuários e Associação com Vendedores</h3>
+    <code>
+        CREATE TABLE Usuarios (
+            UsuarioID INT PRIMARY KEY,
+            NomeUsuario NVARCHAR(50),
+            VendedorID INT
+        );
+        INSERT INTO Usuarios (UsuarioID, NomeUsuario, VendedorID) VALUES
+        (1, 'usuario1', 101),
+        (2, 'usuario2', 102),
+        (3, 'usuario3', 103);
+    </code>
+    <h3>3. Criação da Função de Segurança</h3>
+    <code>
+        CREATE FUNCTION dbo.fnSegurancaVendas (@VendedorID INT)
+        RETURNS TABLE
+        WITH SCHEMABINDING
+        AS
+        RETURN SELECT 1 AS fnSegurancaVendasResult
+        FROM dbo.Usuarios
+        WHERE VendedorID = @VendedorID AND NomeUsuario = user();
+    </code>
+    <h3>4. Criação da Política de Segurança</h3>
+    <code>
+        CREATE SECURITY POLICY PoliticaSegurancaVendas
+        ADD FILTER PREDICATE dbo.fnSegurancaVendas(VendedorID) ON dbo.Vendas
+        WITH (STATE = ON);
+    </code>
+    <h2>Explicação dos Comandos</h2>
+    <p>
+        <strong>1. Criação da Tabela e Inserção de Dados</strong>: Criamos a tabela <code>Vendas</code> para armazenar informações sobre as vendas realizadas por diferentes vendedores. Inserimos alguns dados de exemplo na tabela <code>Vendas</code>.
+    </p>
+    <p>
+        <strong>2. Criação da Tabela de Usuários e Associação com Vendedores</strong>: Criamos a tabela <code>Usuarios</code> para associar os nomes de usuários do SQL Server aos IDs dos vendedores. Inserimos alguns dados de exemplo na tabela <code>Usuarios</code>.
+    </p>
+    <p>
+        <strong>3. Criação da Função de Segurança</strong>: Criamos a função <code>fnSegurancaVendas</code> que verifica se o <code>VendedorID</code> da tabela <code>Vendas</code> corresponde ao <code>VendedorID</code> do usuário atual. A função retorna <code>1</code> se a condição for verdadeira, permitindo o acesso à linha de dados.
+    </p>
+    <p>
+        <strong>4. Criação da Política de Segurança</strong>: Criamos a política de segurança <code>PoliticaSegurancaVendas</code> e aplicamos a função <code>fnSegurancaVendas</code> à tabela <code>Vendas</code>. A política de segurança garante que os filtros definidos na função sejam aplicados automaticamente quando um usuário consulta a tabela <code>Vendas</code>.
+    </p>
+    <h2>Considerações</h2>
+    <ul>
+        <li><strong>Segurança</strong>: Certifique-se de que os usuários não tenham permissões diretas para modificar a tabela <code>Vendas</code> ou a tabela <code>Usuarios</code>.</li>
+        <li><strong>Desempenho</strong>: Teste e otimize a função de segurança e a política de segurança conforme necessário, especialmente em ambientes com grandes volumes de dados.</li>
+    </ul>
+    <h2>Consulta de Dados</h2>
+    <p>
+        Agora, quando um usuário consulta a tabela <code>Vendas</code>, ele verá apenas as linhas de dados que correspondem ao seu <code>VendedorID</code>.
+    </p>
+    <code>
+        SELECT * FROM Vendas;
+    </code>
+</body>
+</html>

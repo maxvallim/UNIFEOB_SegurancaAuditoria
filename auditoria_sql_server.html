@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo de Auditoria no SQL Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exemplo de Auditoria no SQL Server</h1>
+    <h2>Configurando Auditoria no SQL Server</h2>
+    <ol>
+        <li>
+            <strong>Criar uma Auditoria de Servidor:</strong>
+            <ol>
+                <li>Abra o SQL Server Management Studio (SSMS).</li>
+                <li>Conecte-se à instância do SQL Server.</li>
+                <li>No Object Explorer, expanda a instância do SQL Server.</li>
+                <li>Clique com o botão direito em "Security" e selecione "New Audit...".</li>
+                <li>Configure o nome da auditoria e o local onde os logs serão armazenados (arquivo, Application Log, ou Security Log).</li>
+                <li>Clique em "OK".</li>
+            </ol>
+        </li>
+        <li>
+            <strong>Criar uma Especificação de Auditoria de Banco de Dados:</strong>
+            <ol>
+                <li>No Object Explorer, expanda "Databases" e selecione o banco de dados desejado.</li>
+                <li>Expanda "Security" e clique com o botão direito em "Database Audit Specifications" e selecione "New Database Audit Specification...".</li>
+                <li>Configure o nome da especificação e selecione a auditoria criada anteriormente.</li>
+                <li>Adicione as ações de auditoria desejadas (por exemplo, SELECT, INSERT, UPDATE, DELETE).</li>
+                <li>Clique em "OK".</li>
+            </ol>
+        </li>
+        <li>
+            <strong>Habilitar a Auditoria:</strong>
+            <ol>
+                <li>No Object Explorer, expanda "Security" e "Audits".</li>
+                <li>Clique com o botão direito na auditoria criada e selecione "Enable Audit".</li>
+            </ol>
+        </li>
+    </ol>
+
+    <h2>Exercício Prático</h2>
+    <p>Vamos criar uma auditoria que monitore todas as operações de SELECT em uma tabela específica.</p>
+    <ol>
+        <li>
+            <strong>Criar a Auditoria de Servidor:</strong>
+            <pre><code>CREATE SERVER AUDIT [MinhaAuditoria]
+TO FILE 
+( FILEPATH = 'C:\AuditLogs\' )
+WITH 
+( QUEUE_DELAY = 1000, 
+  ON_FAILURE = CONTINUE );
+GO
+ALTER SERVER AUDIT [MinhaAuditoria] WITH (STATE = ON);
+GO</code></pre>
+        </li>
+        <li>
+            <strong>Criar a Especificação de Auditoria de Banco de Dados:</strong>
+            <pre><code>USE [SeuBancoDeDados];
+GO
+CREATE DATABASE AUDIT SPECIFICATION [MinhaEspecificacaoDeAuditoria]
+FOR SERVER AUDIT [MinhaAuditoria]
+ADD (SELECT ON OBJECT::[dbo].[SuaTabela] BY [public])
+WITH (STATE = ON);
+GO</code></pre>
+        </li>
+        <li>
+            <strong>Testar a Auditoria:</strong>
+            <pre><code>SELECT * FROM [dbo].[SuaTabela];</code></pre>
+        </li>
+        <li>
+            <strong>Verificar os Logs de Auditoria:</strong>
+            <p>Verifique os logs de auditoria no local especificado (por exemplo, <code>C:\AuditLogs\</code>).</p>
+        </li>
+    </ol>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudo de Caso: Criação de Stored Procedure para Logs de Auditoria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+        .step {
+            margin-bottom: 20px;
+        }
+        .note {
+            solid #2196F3;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Estudo de Caso: Criação de Stored Procedure para Logs de Auditoria</h1>
+    <p>Este estudo de caso guiará você na criação de uma stored procedure para gerar logs de inclusão, alteração e exclusão na tabela produtos, identificando o usuário conectado. Siga os passos abaixo com a orientação do professor.</p>
+
+    <div class="step">
+        <h2>Passo 1: Criação da Tabela de Logs</h2>
+        <p>Primeiro, vamos criar a tabela de logs que armazenará as informações das operações realizadas.</p>
+        <pre><code>CREATE TABLE logs_produtos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    operacao VARCHAR(10),
+    tabela VARCHAR(50),
+    produto_id INT,
+    usuario VARCHAR(100),
+    ip_usuario VARCHAR(45),
+    valores_anteriores TEXT,
+    valores_novos TEXT,
+    data TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</code></pre>
+        <div class="note">
+            <strong>Nota:</strong> Certifique-se de que a tabela logs_produtos foi criada corretamente antes de prosseguir para o próximo passo.
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>Passo 2: Criação da Stored Procedure</h2>
+        <p>Agora, vamos criar a stored procedure que será responsável por inserir os logs na tabela logs_produtos.</p>
+        <pre><code>DELIMITER //
+CREATE PROCEDURE log_produto(
+    IN p_operacao VARCHAR(10),
+    IN p_tabela VARCHAR(50),
+    IN p_produto_id INT,
+    IN p_valores_anteriores TEXT,
+    IN p_valores_novos TEXT
+)
+BEGIN
+    DECLARE v_usuario VARCHAR(100);
+    DECLARE v_ip_usuario VARCHAR(45);
+    SET v_usuario = USER();
+    SET v_ip_usuario = (SELECT SUBSTRING_INDEX(USER(), '@', -1));
+    INSERT INTO logs_produtos (operacao, tabela, produto_id, usuario, ip_usuario, valores_anteriores, valores_novos)
+    VALUES (p_operacao, p_tabela, p_produto_id, v_usuario, v_ip_usuario, p_valores_anteriores, p_valores_novos);
+END //
+DELIMITER ;</code></pre>
+        <div class="note">
+            <strong>Nota:</strong> Analise cada parte da stored procedure e como ela funciona.
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>Passo 3: Criação dos Triggers</h2>
+        <p>Vamos criar os triggers que chamarão a stored procedure para registrar as operações de inclusão, alteração e exclusão na tabela produtos.</p>
+        <h3>Trigger para Inclusão</h3>
+        <pre><code>CREATE TRIGGER trg_produto_insert
+AFTER INSERT ON produtos
+FOR EACH ROW
+BEGIN
+    CALL log_produto('INSERT', 'produtos', NEW.id, NULL, CONCAT('nome=', NEW.nome, ', preco=', NEW.preco));
+END;</code></pre>
+
+        <h3>Trigger para Alteração</h3>
+        <pre><code>CREATE TRIGGER trg_produto_update
+AFTER UPDATE ON produtos
+FOR EACH ROW
+BEGIN
+    CALL log_produto('UPDATE', 'produtos', NEW.id, CONCAT('nome=', OLD.nome, ', preco=', OLD.preco), CONCAT('nome=', NEW.nome, ', preco=', NEW.preco));
+END;</code></pre>
+
+        <h3>Trigger para Exclusão</h3>
+        <pre><code>CREATE TRIGGER trg_produto_delete
+AFTER DELETE ON produtos
+FOR EACH ROW
+BEGIN
+    CALL log_produto('DELETE', 'produtos', OLD.id, CONCAT('nome=', OLD.nome, ', preco=', OLD.preco), NULL);
+END;</code></pre>
+
+    </div>
+
+    <div class="step">
+        <h2>Passo 4: Teste e Validação</h2>
+        <p>Finalmente, vamos testar e validar se os logs estão sendo gerados corretamente.</p>
+        <ol>
+            <li>Insira um novo produto na tabela produtos e verifique se o log de inclusão foi gerado.</li>
+            <li>Atualize um produto existente e verifique se o log de alteração foi gerado.</li>
+            <li>Exclua um produto e verifique se o log de exclusão foi gerado.</li>
+        </ol>
+    </div>
+</body>
+</html>

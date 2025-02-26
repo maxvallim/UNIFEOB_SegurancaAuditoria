@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo Robusto de Segurança em Nível de Linha no MySQL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 5px;
+            display: block;
+            margin: 10px 0;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exemplo Robusto de Segurança em Nível de Linha no MySQL</h1>
+    <h2>O que é Segurança em Nível de Linha (RLS)?</h2>
+    <p>
+        A <strong>Segurança em Nível de Linha (RLS)</strong> é uma funcionalidade que permite controlar o acesso aos dados em um banco de dados de forma granular. Isso você pode definir exatamente quais linhas de dados cada usuário específico pode visualizar ou modificar. Essa abordagem é essencial para garantir que dados sensíveis sejam acessados apenas por usuários autorizados, aumentando a segurança e a privacidade dos dados.
+    </p>
+    <h3>Como Funciona a RLS?</h3>
+    <p>
+        A RLS funciona aplicando filtros de segurança que determinam quais linhas de dados são visíveis para cada usuário. Esses filtros são baseados em regras definidas pelo administrador do banco de dados. Aqui estão os principais componentes da RLS:
+    </p>
+    <ul>
+        <li><strong>Funções de Segurança</strong>: As funções de segurança são criadas para definir as regras de acesso. Essas funções podem ser baseadas em atributos do usuário, como seu ID, departamento ou função na organização.</li>
+        <li><strong>Políticas de Segurança</strong>: As políticas de segurança aplicam as funções de segurança às tabelas específicas. Elas garantem que os filtros definidos nas funções sejam aplicados automaticamente quando um usuário consulta a tabela.</li>
+    </ul>
+    <h3>Benefícios da RLS</h3>
+    <ul>
+        <li><strong>Controle Granular</strong>: Permite um controle detalhado sobre quem pode acessar quais dados, aumentando a segurança.</li>
+        <li><strong>Conformidade</strong>: Ajuda a cumprir regulamentações de privacidade e segurança de dados, como a GDPR.</li>
+        <li><strong>Simplicidade</strong>: Facilita a gestão de permissões, pois as regras são centralizadas e aplicadas automaticamente.</li>
+    </ul>
+    <h2>Exemplo de Implementação de RLS no MySQL</h2>
+    <h3>1. Criação da Tabela e Inserção de Dados</h3>
+    <code>
+        CREATE TABLE Vendas (
+            VendaID INT PRIMARY KEY,
+            VendedorID INT,
+            Produto VARCHAR(50),
+            Quantidade INT,
+            Valor DECIMAL(10, 2)
+        );
+        INSERT INTO Vendas (VendaID, VendedorID, Produto, Quantidade, Valor) VALUES
+        (1, 101, 'Produto A', 10, 100.00),
+        (2, 102, 'Produto B', 5, 50.00),
+        (3, 101, 'Produto C', 7, 70.00),
+        (4, 103, 'Produto D', 3, 30.00);
+    </code>
+    <h3>2. Criação de uma Tabela de Usuários e Associação com Vendedores</h3>
+    <code>
+        CREATE TABLE Usuarios (
+            UsuarioID INT PRIMARY KEY,
+            NomeUsuario VARCHAR(50),
+            VendedorID INT
+        );
+        INSERT INTO Usuarios (UsuarioID, NomeUsuario, VendedorID) VALUES
+        (1, 'usuario1', 101),
+        (2, 'usuario2', 102),
+        (3, 'usuario3', 103);
+    </code>
+    <h3>3. Criação de uma View para Filtrar os Dados</h3>
+    <code>
+        CREATE VIEW VendasFiltradas AS
+        SELECT Vendas.*
+        FROM Vendas
+        JOIN Usuarios ON Vendas.VendedorID = Usuarios.VendedorID
+        WHERE Usuarios.NomeUsuario = CURRENT_USER();
+    </code>
+    <h3>4. Uso da View para Consultas</h3>
+    <code>
+        SELECT * FROM VendasFiltradas;
+    </code>
+    <h2>Explicação</h2>
+    <p>
+        <strong>Tabela <code>Vendas</code></strong>: Contém informações sobre as vendas realizadas por diferentes vendedores.
+    </p>
+    <p>
+        <strong>Tabela <code>Usuarios</code></strong>: Associa os nomes de usuários do MySQL aos IDs dos vendedores.
+    </p>
+    <p>
+        <strong>View <code>VendasFiltradas</code></strong>: Filtra as vendas com base no usuário atual (<code>CURRENT_USER()</code>), garantindo que cada vendedor veja apenas suas próprias vendas.
+    </p>
+    <h2>Considerações</h2>
+    <ul>
+        <li><strong>Segurança</strong>: Certifique-se de que os usuários não tenham acesso direto à tabela <code>Vendas</code>, mas apenas à view <code>VendasFiltradas</code>.</li>
+        <li><strong>Desempenho</strong>: Dependendo do volume de dados e da complexidade das consultas, o uso de views pode impactar o desempenho. Teste e otimize conforme necessário.</li>
+    </ul>
+</body>
+</html>
