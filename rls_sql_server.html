@@ -71,13 +71,17 @@
     </code>
     <h3>3. Criação da Função de Segurança</h3>
     <code>
-        CREATE FUNCTION dbo.fnSegurancaVendas (@VendedorID INT)
-        RETURNS TABLE
-        WITH SCHEMABINDING
-        AS
-        RETURN SELECT 1 AS fnSegurancaVendasResult
-        FROM dbo.Usuarios
-        WHERE VendedorID = @VendedorID AND NomeUsuario = user();
+		CREATE FUNCTION dbo.fnSegurancaVendas (@VendedorID INT)
+		RETURNS TABLE
+		WITH SCHEMABINDING
+		AS
+		RETURN
+		(
+			SELECT 1 AS fnSegurancaVendasResult
+			FROM dbo.Usuarios
+			WHERE VendedorID = @VendedorID
+			  AND NomeUsuario = CAST(SUSER_SNAME() AS NVARCHAR(128))
+		);
     </code>
     <h3>4. Criação da Política de Segurança</h3>
     <code>
