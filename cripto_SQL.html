@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criptografia no MySQL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        h1 {
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+        }
+        h2 {
+            margin-top: 30px;
+        }
+        p {
+            margin: 10px 0;
+        }
+        ol {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+        code {
+            background-color: #e8e8e8;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        pre {
+            background-color: #e8e8e8;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exercícios de Criptografia</h1>
+
+    <h2>Exercício 1: Criptografia e Descriptografia com MD5</h2>
+    <p><strong>MD5 (Message-Digest Algorithm 5)</strong> é um algoritmo de hash criptográfico que produz um hash de 128 bits (32 caracteres hexadecimais). Embora seja amplamente utilizado para verificar a integridade de dados, não é considerado seguro para criptografia de senhas devido à sua vulnerabilidade a ataques de colisão. MD5 é uma função de hash unidirecional, o que significa que não é possível descriptografar diretamente os dados.</p>
+    <ol>
+        <li>Crie uma tabela chamada <code>usuarios</code> com as colunas <code>id</code>, <code>nome</code>, e <code>senha</code>.</li>
+        <li>Insira alguns registros na tabela, utilizando a função <code>MD5()</code> para criptografar as senhas.</li>
+        <li>Consulte a tabela para verificar como as senhas foram armazenadas.</li>
+        <li>Tente descriptografar as senhas (nota: MD5 é uma função de hash unidirecional, então não é possível descriptografar diretamente).</li>
+    </ol>
+    <pre><code>CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    senha CHAR(32) NOT NULL
+);
+
+INSERT INTO usuarios (nome, senha) VALUES ('Alice', MD5('senha123'));
+INSERT INTO usuarios (nome, senha) VALUES ('Bob', MD5('senha456'));
+
+SELECT * FROM usuarios;
+
+-- Tentativa de descriptografia (não é possível com MD5)
+SELECT nome, senha FROM usuarios WHERE senha = MD5('senha123');</code></pre>
+
+    <h2>Exercício 2: Criptografia e Descriptografia com SHA2</h2>
+    <p><strong>SHA2 (Secure Hash Algorithm 2)</strong> é uma família de funções de hash criptográficas que inclui SHA-256, SHA-384 e SHA-512. SHA-256, que produz um hash de 256 bits, é amplamente utilizado para criptografia de senhas devido à sua resistência a ataques de colisão e à sua segurança aprimorada em comparação com MD5. Assim como MD5, SHA2 é uma função de hash unidirecional.</p>
+    <ol>
+        <li>Crie uma tabela chamada <code>clientes</code> com as colunas <code>id</code>, <code>nome</code>, e <code>senha</code>.</li>
+        <li>Insira alguns registros na tabela, utilizando a função <code>SHA2()</code> para criptografar as senhas com 256 bits.</li>
+        <li>Consulte a tabela para verificar como as senhas foram armazenadas.</li>
+        <li>Tente descriptografar as senhas (nota: SHA2 é uma função de hash unidirecional, então não é possível descriptografar diretamente).</li>
+    </ol>
+    <pre><code>CREATE TABLE clientes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    senha CHAR(64) NOT NULL
+);
+
+INSERT INTO clientes (nome, senha) VALUES ('Carlos', SHA2('senha789', 256));
+INSERT INTO clientes (nome, senha) VALUES ('Diana', SHA2('senha012', 256));
+
+SELECT * FROM clientes;
+
+-- Tentativa de descriptografia (não é possível com SHA2)
+SELECT nome, senha FROM clientes WHERE senha = SHA2('senha789', 256);</code></pre>
+
+    <h2>Exercício 3: Criptografia e Descriptografia com AES_ENCRYPT e AES_DECRYPT</h2>
+    <p><strong>AES (Advanced Encryption Standard)</strong> é um algoritmo de criptografia simétrica que utiliza chaves de 128, 192 ou 256 bits para criptografar e descriptografar dados. Ao contrário dos algoritmos de hash como MD5 e SHA2, AES permite a criptografia e a descriptografia de dados, tornando-o ideal para proteger informações sensíveis que precisam ser recuperadas posteriormente.</p>
+    <ol>
+        <li>Crie uma tabela chamada <code>mensagens</code> com as colunas <code>id</code>, <code>texto</code>, e <code>texto_criptografado</code>.</li>
+        <li>Insira alguns registros na tabela, utilizando a função <code>AES_ENCRYPT()</code> para criptografar o texto.</li>
+        <li>Consulte a tabela utilizando a função <code>AES_DECRYPT()</code> para descriptografar o texto.</li>
+    </ol>
+    <pre><code>CREATE TABLE mensagens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    texto VARCHAR(255) NOT NULL,
+    texto_criptografado BLOB NOT NULL
+);
+
+INSERT INTO mensagens (texto, texto_criptografado) VALUES ('Mensagem secreta 1', AES_ENCRYPT('Mensagem secreta 1', 'chave_secreta'));
+INSERT INTO mensagens (texto, texto_criptografado) VALUES ('Mensagem secreta 2', AES_ENCRYPT('Mensagem secreta 2', 'chave_secreta'));
+
+SELECT id, texto, CAST(AES_DECRYPT(texto_criptografado, 'chave_secreta') AS CHAR) AS texto_descriptografado FROM mensagens;</code></pre>
+
+    <h2>Exercício 4: Verificação de Senha Criptografada</h2>
+    <p><strong>SHA2 (Secure Hash Algorithm 2)</strong> é uma família de funções de hash criptográficas que inclui SHA-256, SHA-384 e SHA-512. SHA-256, que produz um hash de 256 bits, é amplamente utilizado para criptografia de senhas devido à sua resistência a ataques de colisão e à sua segurança aprimorada em comparação com MD5. Assim como MD5, SHA2 é uma função de hash unidirecional.</p>
+    <ol>
+        <li>Crie uma tabela chamada <code>funcionarios</code> com as colunas <code>id</code>, <code>nome</code>, e <code>senha</code>.</li>
+        <li>Insira alguns registros na tabela, utilizando a função <code>SHA2()</code> para criptografar as senhas.</li>
+        <li>Crie uma consulta que verifique se uma senha fornecida corresponde à senha armazenada.</li>
+    </ol>
+    <pre><code>CREATE TABLE funcionarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    senha CHAR(64) NOT NULL
+);
+
+INSERT INTO funcionarios (nome, senha) VALUES ('Eduardo', SHA2('senha123', 256));
+INSERT INTO funcionarios (nome, senha) VALUES ('Fernanda', SHA2('senha456', 256));
+
+-- Verificação de senha
+SELECT * FROM funcionarios WHERE nome = 'Eduardo' AND senha = SHA2('senha123', 256);</code></pre>
+
+    <h2>Exercício 5: Atualização de Senha Criptografada</h2>
+    <ol>
+        <li>Crie uma tabela chamada administradores com as colunas id, nome, e senha.</li>
+        <li>Insira alguns registros na tabela, utilizando a função MD5() para criptografar as senhas.</li>
+        <li>Atualize a senha de um administrador, utilizando a função SHA2() para criptografar a nova senha.</li>
+        <li>Verifique a senha atualizada.</li>		
+    </ol>    
+	<pre><code>CREATE TABLE administradores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    senha VARCHAR(100) NOT NULL
+);
+
+INSERT INTO administradores (nome, senha) VALUES ('Gabriel', MD5('senha123'));
+INSERT INTO administradores (nome, senha) VALUES ('Helena', MD5('senha456'));
+
+UPDATE administradores SET senha = SHA2('nova_senha', 256) WHERE nome = 'Gabriel';
+
+SELECT * FROM administradores;
+
+SELECT * FROM administradores WHERE nome = 'Gabriel' AND senha = SHA2('nova_senha', 256);</code></pre>
