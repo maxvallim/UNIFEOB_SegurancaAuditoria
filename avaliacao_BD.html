@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .code {
+            background-color: #f4f4f4;
+            border-left: 10px solid #ccc;
+            padding: 10px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Avaliação</h1>
+    <div class="question">
+        <h2>Questão 1 (MySQL):</h2>
+        <p>Você foi contratado como analista de segurança de banco de dados para uma empresa que está implementando um novo sistema de gerenciamento de cursos e matrículas. Sua tarefa é garantir que o banco de dados esteja configurado corretamente, com tabelas adequadas e usuários com privilégios apropriados para garantir a segurança e a integridade dos dados.</p>
+        <p>Crie um banco de dados chamado <strong>avaliacao19032025</strong>.</p>
+        <p>No banco de dados <strong>avaliacao19032025</strong>, crie três tabelas: <strong>alunos</strong>, <strong>cursos</strong> e <strong>matriculas</strong> com as seguintes colunas:</p>
+        <div class="code">
+            Tabela alunos: id (INT, AUTO_INCREMENT, PRIMARY KEY), nome (VARCHAR(100)), idade (INT).<br>
+            Tabela cursos: id (INT, AUTO_INCREMENT, PRIMARY KEY), nome (VARCHAR(100)), duracao (INT).<br>
+            Tabela matriculas: id (INT, AUTO_INCREMENT, PRIMARY KEY), aluno_id (INT, FOREIGN KEY referenciando alunos(id)), curso_id (INT, FOREIGN KEY referenciando cursos(id)), data_matricula (DATE).
+        </div>
+        <p>Criação de Usuários:</p>
+        <div class="code">
+            Crie três usuários no MySQL com os seguintes nomes e senhas:<br>
+            usuario1 com a senha senha1.<br>
+            usuario2 com a senha senha2.<br>
+            usuario3 com a senha senha3.<br>
+            Conceda os seguintes privilégios aos usuários criados:<br>
+            Usuário 1: Privilégios completos no banco de dados avaliacao.<br>
+            Usuário 2: Privilégios de seleção (SELECT) e inserção (INSERT) nas tabelas alunos e cursos.<br>
+            Usuário 3: Privilégios de seleção (SELECT) e atualização (UPDATE) na tabela matriculas.
+        </div>
+        <p>Aplicação das Alterações:</p>
+        <div class="code">
+            Execute o comando necessário para aplicar as alterações de privilégios.<br>
+            Verifique os usuários criados e os privilégios concedidos a cada um.
+        </div>
+    </div>
+
+    <div class="question">
+        <h2>Questão 2 (MySQL):</h2>
+        <p>Você foi promovido a administrador de banco de dados em uma empresa que valoriza a segurança e a auditoria de seus dados. Sua nova tarefa é implementar um sistema de auditoria que registre automaticamente todas as operações de inserção, atualização e exclusão nas tabelas alunos, cursos e matriculas. Para isso, você deve criar uma procedure de logs e configurar triggers que acionem essa procedure sempre que uma dessas operações ocorrer. Além disso, o log deve incluir o nome do usuário que realizou a operação.</p>
+        <p>Criar uma procedure de logs e configurar triggers para monitorar automaticamente as operações nas tabelas alunos, cursos e matriculas, registrando o nome do usuário que realizou a operação.</p>
+        <p>Crie uma tabela chamada <strong>logs</strong> no banco de dados avaliacao para armazenar os registros de auditoria. A tabela deve ter as seguintes colunas:</p>
+        <div class="code">
+            id (INT, AUTO_INCREMENT, PRIMARY KEY)<br>
+            tabela (VARCHAR(100))<br>
+            operacao (VARCHAR(10))<br>
+            usuario (VARCHAR(100))<br>
+            data_hora (TIMESTAMP)<br>
+            detalhes (TEXT)
+        </div>
+        <p>Crie uma procedure chamada registrar_log que insira um registro na tabela logs com as informações da operação realizada.</p>
+        <p>Crie triggers para as tabelas alunos, cursos e matriculas que acionem a procedure registrar_log nas operações de inserção (INSERT), atualização (UPDATE) e exclusão (DELETE).</p>
+    </div>
+
+    <div class="question">
+        <h2>Questão 3 (SQL Server):</h2>
+        <p>Você precisa garantir que os dados sejam acessados apenas por usuários autorizados. Para isso, você deve implementar a Segurança em Nível de Linha (Row-Level Security - RLS) no SQL Server. A RLS permite que você controle o acesso a linhas específicas em uma tabela com base no contexto de autorização do usuário atual. Sua tarefa é criar uma política de segurança que restrinja o acesso às linhas de uma tabela de acordo com o usuário que está logado.</p>
+        <p>Implementar a Segurança em Nível de Linha (RLS) em uma tabela no SQL Server para restringir o acesso às linhas com base no usuário logado.</p>
+        <p>Crie uma tabela chamada dados_sensíveis com as seguintes colunas:</p>
+        <div class="code">
+            id (INT, PRIMARY KEY)<br>
+            nome (VARCHAR(100))<br>
+            departamento (VARCHAR(100))<br>
+            usuario (VARCHAR(100))
+        </div>
+        <p>Inserção de Dados:</p>
+        <div class="code">
+            INSERT INTO dados_sensíveis (id, nome, departamento, usuario)<br>
+            VALUES (1, 'Alice', 'RH', 'alice'),<br>
+                   (2, 'Bob', 'TI', 'bob'),<br>
+                   (3, 'Carlos', 'Financeiro', 'carlos');
+        </div>
+
+        <p>Criação da Função de Filtragem:</p>
+        <div class="code">
+            CREATE FUNCTION fn_filtrar_usuario (@usuario AS sysname)<br>
+            RETURNS TABLE<br>
+            WITH SCHEMABINDING<br>
+            AS<br>
+            RETURN SELECT 1 AS fn_result<br>
+                   WHERE @usuario = user();
+        </div>
+
+        <p>Criação da Política de Segurança:</p>
+        <div class="code">
+            CREATE SECURITY POLICY politica_segurança_usuario<br>
+            ADD FILTER PREDICATE fn_filtrar_usuario(usuario) ON dbo.dados_sensíveis;
+        </div>
+
+        <p>Testar a Política de Segurança:</p>
+        <div class="code">
+            Logue como diferentes usuários e execute consultas na tabela dados_sensíveis para verificar se a RLS está funcionando corretamente.
+        </div>
+    </div>
+    <div class="question">
+        <h2><li><a href="auditoria_sql_server.html">Questão 4 - Auditoria no SQL Server</a></li></h2>
+	</div	
+
+
+</body>
+</html>
