@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação do TCP/IP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        p {
+            text-align: justify;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Apresentação e Explicação do TCP/IP</h1>
+
+    <h2>O que é TCP/IP?</h2>
+    <p>O TCP/IP (Transmission Control Protocol/Internet Protocol) é um conjunto de protocolos usados para facilitar a comunicação entre dispositivos em redes, incluindo a internet. Ele define como os dados são enviados, recebidos e organizados em uma rede.</p>
+
+    <h2>Estrutura do TCP/IP</h2>
+    <p>O modelo TCP/IP é composto por quatro camadas que trabalham juntas para garantir a comunicação entre dispositivos:</p>
+    <ul>
+        <li><b>1. Camada de Aplicação:</b> Responsável por interagir com os aplicativos do usuário, como navegadores e e-mails.</li>
+        <li><b>2. Camada de Transporte:</b> Gerencia o envio e recebimento de dados entre dispositivos, garantindo a integridade e confiabilidade.</li>
+        <li><b>3. Camada de Internet:</b> Define o roteamento dos dados através de diferentes redes, usando endereços IP.</li>
+        <li><b>4. Camada de Rede (ou Host a Rede):</b> Trata da interface física e conexões, como cabos e Wi-Fi.</li>
+    </ul>
+
+    <h2>Funcionamento do TCP/IP</h2>
+    <p>O TCP/IP funciona dividindo os dados em pequenos pacotes, que são enviados de um dispositivo para outro. Esses pacotes passam por diversas camadas até serem recebidos e reconstituídos no destino.</p>
+    <p>Por exemplo:</p>
+    <ul>
+        <li>O TCP garante que os pacotes sejam entregues na ordem correta e sem erros.</li>
+        <li>O IP cuida do roteamento dos pacotes para o destino correto.</li>
+    </ul>
+
+    <h2>Exemplo Prático</h2>
+    <p>Imagine que você está enviando um e-mail:</p>
+    <ol>
+        <li>A camada de Aplicação (SMTP) prepara o conteúdo do e-mail.</li>
+        <li>A camada de Transporte (TCP) divide o e-mail em pacotes e garante que cheguem ao destino.</li>
+        <li>A camada de Internet (IP) direciona os pacotes pelo melhor caminho.</li>
+        <li>A camada de Rede cuida da transmissão física dos pacotes.</li>
+    </ol>
+
+    <h2>Resumo das Camadas do TCP/IP</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Camada</th>
+                <th>Função</th>
+                <th>Exemplo de Protocolo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Aplicação</td>
+                <td>Interação com aplicativos</td>
+                <td>HTTP, SMTP, FTP</td>
+            </tr>
+            <tr>
+                <td>Transporte</td>
+                <td>Entrega de dados confiável</td>
+                <td>TCP, UDP</td>
+            </tr>
+            <tr>
+                <td>Internet</td>
+                <td>Roteamento de dados</td>
+                <td>IP, ICMP</td>
+            </tr>
+            <tr>
+                <td>Rede</td>
+                <td>Transmissão física</td>
+                <td>Ethernet, Wi-Fi</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Por que o TCP/IP é importante?</h2>
+    <p>O TCP/IP é a base da comunicação na internet. Ele garante que dispositivos em redes diferentes possam se comunicar de forma eficiente e confiável.</p>
+</body>
+</html>

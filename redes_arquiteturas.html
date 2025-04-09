@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquiteturas de Redes</title>
+</head>
+<body>
+    <header>
+        <h1>Arquiteturas de Redes com Detalhes e Tutoriais</h1>
+    </header>
+
+    <section>
+        <h2>1. Arquitetura Cliente-Servidor</h2>
+        <p><strong>Descrição:</strong> O modelo cliente-servidor é composto por um servidor central que gerencia recursos e serviços, enquanto clientes solicitam esses recursos. É amplamente utilizado em redes corporativas.</p>
+        <h3>Exemplo Prático no Cisco Packet Tracer</h3>
+        <ol>
+            <li>Adicionar um servidor e 4 PCs conectados a um switch com cabos de par trançado.</li>
+            <li>Configurar o serviço DHCP no servidor com um intervalo de IPs.</li>
+            <li>Nos PCs, configurar a opção "DHCP" para obter os IPs automaticamente.</li>
+            <li>Testar a conectividade usando o comando <code>ping</code>.</li>
+        </ol>
+        <p><strong>Aspectos de Segurança:</strong></p>
+        <ul>
+            <li>Utilizar autenticação robusta, como senhas fortes e autenticação multifator.</li>
+            <li>Habilitar firewalls para restringir acessos indesejados ao servidor.</li>
+            <li>Manter o servidor atualizado para proteger contra vulnerabilidades.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>2. Arquitetura Ponto-a-Ponto (P2P)</h2>
+        <p><strong>Descrição:</strong> Todos os dispositivos têm permissões iguais e podem compartilhar recursos diretamente. É ideal para redes pequenas.</p>
+        <h3>Exemplo Prático no Cisco Packet Tracer</h3>
+        <ol>
+            <li>Conectar dois PCs diretamente com um cabo cruzado.</li>
+            <li>Configurar IPs manuais nos PCs (por exemplo, 192.168.1.1 e 192.168.1.2).</li>
+            <li>Testar a conectividade com <code>ping</code>.</li>
+        </ol>
+        <p><strong>Aspectos de Segurança:</strong></p>
+        <ul>
+            <li>Utilizar criptografia para proteger os dados transferidos entre os dispositivos.</li>
+            <li>Manter antivírus e firewalls ativos nos dois dispositivos.</li>
+            <li>Estabelecer controles de acesso para minimizar riscos de invasões.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>3. Rede em Estrela</h2>
+        <p><strong>Descrição:</strong> Os dispositivos são conectados a um ponto central, geralmente um switch. Muito usada em redes locais.</p>
+        <h3>Exemplo Prático no Cisco Packet Tracer</h3>
+        <ol>
+            <li>Adicionar um switch e 4 PCs conectados por cabos de par trançado.</li>
+            <li>Configurar endereços IP manuais nos PCs.</li>
+            <li>Testar a conectividade com <code>ping</code>.</li>
+        </ol>
+        <p><strong>Aspectos de Segurança:</strong></p>
+        <ul>
+            <li>Configurar VLANs para segmentação da rede e controle de tráfego.</li>
+            <li>Ativar o recurso "port security" no switch para evitar conexões não autorizadas.</li>
+            <li>Monitorar o tráfego da rede para detectar atividades suspeitas.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>4. Rede em Barramento</h2>
+        <p><strong>Descrição:</strong> Todos os dispositivos compartilham o mesmo meio físico para transmitir dados. Menos usada atualmente devido às limitações.</p>
+        <h3>Exemplo Prático no Cisco Packet Tracer</h3>
+        <ol>
+            <li>Adicionar um hub e 3 PCs conectados por cabos de par trançado.</li>
+            <li>Configurar endereços IP manuais nos PCs.</li>
+            <li>Testar a conectividade com <code>ping</code>.</li>
+        </ol>
+        <p><strong>Aspectos de Segurança:</strong></p>
+        <ul>
+            <li>Utilizar protocolos de criptografia para proteger os dados compartilhados.</li>
+            <li>Implementar ferramentas de monitoramento para detectar tentativas de interceptação.</li>
+            <li>Migrar, sempre que possível, para modelos mais modernos e seguros.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>5. Rede em Anel</h2>
+        <p><strong>Descrição:</strong> Os dispositivos estão conectados em um circuito fechado. Usada em sistemas industriais.</p>
+        <h3>Exemplo Prático no Cisco Packet Tracer</h3>
+        <ol>
+            <li>Conectar switches em um anel com cabos de par trançado.</li>
+            <li>Configurar STP nos switches para evitar loops.</li>
+            <li>Testar a conectividade com <code>ping</code>.</li>
+        </ol>
+        <p><strong>Aspectos de Segurança:</strong></p>
+        <ul>
+            <li>Habilitar autenticação nos switches para limitar o acesso.</li>
+            <li>Monitorar continuamente o tráfego para detectar falhas ou acessos não autorizados.</li>
+            <li>Implementar redundância para garantir a continuidade em caso de falhas.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>6. Arquitetura Híbrida</h2>
+        <p><strong>Descrição:</strong> Combina duas ou mais arquiteturas, aproveitando seus benefícios. Muito usada em redes corporativas.</p>
+        <h3>Exemplo Prático no Cisco Packet Tracer</h3>
+        <ol>
+            <li>Conectar dois grupos de PCs em estrela a seus respectivos switches.</li>
+            <li>Interligar os switches por meio de um hub central.</li>
+            <li>Testar a conectividade entre os grupos com <code>ping</code>.</li>
+        </ol>
+        <p><strong>Aspectos de Segurança:</strong></p>
+        <ul>
+            <li>Utilizar firewalls entre segmentos distintos para evitar acessos indevidos.</li>
+            <li>Configurar VLANs e políticas de ACL (Listas de Controle de Acesso) para controle de tráfego.</li>
+            <li>Automatizar auditorias para identificar vulnerabilidades e corrigir falhas.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>7. Arquitetura Mesh (Malha)</h2>
+        <p><strong>Descrição:</strong> Cada dispositivo está conectado a vários outros, garantindo redundância. Muito usada em redes de alta disponibilidade.</p>
+        <h3>Exemplo Prático no Cisco Packet Tracer</h3>
+        <ol>
+            <li>Interligar roteadores em uma malha com conexões seriais.</li>
+            <li>Configurar um protocolo de roteamento dinâmico, como OSPF.</li>
+            <li>Testar a conectividade com <code>ping</code> de um PC a outro.</li>
+        </ol>
+        <p><strong>Aspectos de Segurança:</strong></p>
+        <ul>
+            <li>Configurar criptografia nos links entre os dispositivos.</li>
+            <li>Implementar autenticação nos protocolos de roteamento para evitar ataques.</li>
+            <li>Utilizar ferramentas de monitoramento centralizadas para detectar e corrigir falhas.</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>Relatório criado com o objetivo de detalhar as principais arquiteturas de rede e suas implementações práticas no Cisco Packet Tracer, com foco em segurança.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório: IP, Redes e Sub-redes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        p {
+            text-align: justify;
+            margin-bottom: 10px;
+        }
+        ul {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relatório: IP, Redes e Sub-redes</h1>
+
+    <h2>1. O que é IP?</h2>
+    <p>O <b>Internet Protocol (IP)</b> é um conjunto de regras utilizado para endereçar e encaminhar pacotes de dados entre dispositivos conectados a uma rede. Ele é essencial para permitir a comunicação em redes locais e na internet.</p>
+
+    <h2>2. Funcionamento do IP</h2>
+    <ul>
+        <li><b>Endereçamento:</b> Cada dispositivo recebe um endereço IP único para identificar sua posição na rede.</li>
+        <li><b>Encapsulamento:</b> Os dados são divididos em pacotes contendo informações como endereço de origem e destino.</li>
+        <li><b>Roteamento:</b> Os pacotes passam por roteadores, que decidem o caminho mais eficiente para seu destino.</li>
+    </ul>
+
+    <h2>3. Estrutura de Endereços IP</h2>
+    <p><b>IPv4:</b> Composto por 32 bits, dividido em quatro octetos. Exemplos: 192.168.0.1.</p>
+    <p><b>IPv6:</b> Composto por 128 bits, com maior capacidade de endereçamento. Exemplo: 2001:0db8:85a3:0000:0000:8a2e:0370:7334.</p>
+
+    <h2>4. Tipos de Endereços IP</h2>
+    <ul>
+        <li><b>IP Privado:</b> Usado em redes internas. Exemplo: 192.168.1.10.</li>
+        <li><b>IP Público:</b> Usado para comunicação global na internet. Exemplo: 203.0.113.5.</li>
+        <li><b>Endereço de Loopback:</b> Para testes no próprio dispositivo. Exemplo: 127.0.0.1.</li>
+        <li><b>IP Dinâmico:</b> Atribuído automaticamente. Exemplo: 192.168.1.25.</li>
+        <li><b>IP Estático:</b> Configurado manualmente e fixo. Exemplo: 192.168.1.100.</li>
+    </ul>
+
+    <h2>5. Máscaras de Sub-rede e CIDR</h2>
+    <p><b>Máscara de Sub-rede:</b> Define qual parte do endereço IP pertence à rede e qual parte identifica os dispositivos. Exemplo: 255.255.255.0.</p>
+    <p><b>CIDR:</b> Permite dividir redes em sub-redes menores para maior eficiência. Exemplo: 192.168.1.0/26.</p>
+
+    <h2>6. Redes e Sub-redes</h2>
+    <p>Uma rede é um conjunto de dispositivos interconectados que compartilham informações. Sub-redes são divisões menores de uma rede maior, ajudando a organizar e reduzir o tráfego.</p>
+
+    <h2>7. Exemplo Prático: Divisão de Sub-redes</h2>
+    <p>Imagine uma rede original <b>192.168.1.0/24</b>, dividida em 4 sub-redes menores:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Sub-rede</th>
+                <th>Endereço de Rede</th>
+                <th>Intervalo de Hosts</th>
+                <th>Endereço de Broadcast</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Sub-rede 1</td>
+                <td>192.168.1.0</td>
+                <td>192.168.1.1 a 192.168.1.62</td>
+                <td>192.168.1.63</td>
+            </tr>
+            <tr>
+                <td>Sub-rede 2</td>
+                <td>192.168.1.64</td>
+                <td>192.168.1.65 a 192.168.1.126</td>
+                <td>192.168.1.127</td>
+            </tr>
+            <tr>
+                <td>Sub-rede 3</td>
+                <td>192.168.1.128</td>
+                <td>192.168.1.129 a 192.168.1.190</td>
+                <td>192.168.1.191</td>
+            </tr>
+            <tr>
+                <td>Sub-rede 4</td>
+                <td>192.168.1.192</td>
+                <td>192.168.1.193 a 192.168.1.254</td>
+                <td>192.168.1.255</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>8. Exemplo Completo: Comunicação em Redes</h2>
+    <p>Um dispositivo com IP <b>192.168.1.10</b> envia uma mensagem para outro dispositivo na sub-rede <b>192.168.1.64</b>, como <b>192.168.1.70</b>. O roteador utiliza a máscara de sub-rede para identificar origem e destino, garantindo a entrega correta.</p>
+
+    <h2>9. Conclusão</h2>
+    <p>O IP, juntamente com redes e sub-redes, é fundamental para a organização e eficiência da comunicação entre dispositivos conectados. Compreender esses conceitos é essencial para criar sistemas otimizados e seguros.</p>
+</body>
+</html>
