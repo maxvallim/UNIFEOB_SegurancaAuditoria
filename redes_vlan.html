@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: Configuração de VLANs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+        h1 {
+            font-size: 2em;
+            margin-top: 20px;
+        }
+        h2 {
+            font-size: 1.5em;
+            margin-top: 40px;
+        }
+        ul {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        code {
+            display: block;
+            background-color: #f4f4f4;
+            color: #000;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 10px 0;
+            font-family: "Courier New", Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tutorial: Configuração de VLANs no Cisco Packet Tracer</h1>
+
+    <h2>Passo 1: Configuração Inicial</h2>
+    <ul>
+        <li>Abra o Cisco Packet Tracer e adicione os dispositivos necessários.</li>
+        <li>Conecte os PCs ao switch usando cabos Ethernet.</li>
+    </ul>
+
+    <h2>Passo 2: Acessar o Switch</h2>
+    <ul>
+        <li>Clique no switch e vá para a aba CLI.</li>
+        <li>Digite <code>enable</code> para entrar no modo privilegiado.</li>
+        <li>Use <code>configure terminal</code> para acessar o modo de configuração global.</li>
+    </ul>
+
+    <h2>Passo 3: Criar VLANs</h2>
+    <ul>
+        <li>Crie as VLANs com os comandos:</li>
+        <code>
+            vlan 10<br>
+            name VLAN_Alunos<br>
+            vlan 20<br>
+            name VLAN_Professores
+        </code>
+    </ul>
+
+    <h2>Passo 4: Atribuir Portas às VLANs</h2>
+    <ul>
+        <li>Atribua as portas do switch às VLANs:</li>
+        <code>
+            interface fastethernet0/1<br>
+            switchport mode access<br>
+            switchport access vlan 10<br>
+            exit<br>
+            interface fastethernet0/2<br>
+            switchport mode access<br>
+            switchport access vlan 20<br>
+            exit
+        </code>
+    </ul>
+
+    <h2>Passo 5: Configurar Porta Trunk</h2>
+    <ul>
+        <li>Configure uma porta trunk com o comando:</li>
+        <code>
+            interface fastethernet0/24<br>
+            switchport mode trunk<br>
+            exit
+        </code>
+    </ul>
+
+    <h2>Passo 6: Testar a Configuração</h2>
+    <ul>
+        <li>Atribua endereços IP aos PCs.</li>
+        <li>Teste a conectividade usando <code>ping</code>.</li>
+    </ul>
+</body>
+</html>

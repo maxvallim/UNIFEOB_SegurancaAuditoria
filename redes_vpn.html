@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuração de VPN no Cisco Packet Tracer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: black;
+            border-bottom: 2px solid black;
+        }
+        h2 {
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table th, table td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+        table th {
+            background-color: black;
+            color: white;
+        }
+        code {
+            display: block;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Configuração de VPN no Cisco Packet Tracer</h1>
+    <h2>Passo 1: Configuração Inicial</h2>
+    <p>Adicione os dispositivos necessários ao Cisco Packet Tracer:</p>
+    <ul>
+        <li>Dois roteadores para criar a VPN site-to-site.</li>
+        <li>Switches para conectar dispositivos nas redes locais.</li>
+        <li>PCs ou laptops para simular dispositivos finais.</li>
+    </ul>
+
+    <h2>Passo 2: Configuração de Endereços IP</h2>
+    <p>Configure os endereços IP nas interfaces dos roteadores:</p>
+    <h3>Roteador 1</h3>
+    <code>
+    enable<br>
+    configure terminal<br>
+    interface gigabitethernet0/0/0<br>
+    ip address 192.168.1.1 255.255.255.0<br>
+    no shutdown<br>
+    exit<br>
+    interface gigabitethernet0/0/1<br>
+    ip address 1.1.1.1 255.255.255.252<br>
+    no shutdown<br>
+    exit
+    </code>
+
+    <h3>Roteador 2</h3>
+    <code>
+    enable<br>
+    configure terminal<br>
+    interface gigabitethernet0/0/0<br>
+    ip address 192.168.2.1 255.255.255.0<br>
+    no shutdown<br>
+    exit<br>
+    interface gigabitethernet0/0/1<br>
+    ip address 1.1.1.2 255.255.255.252<br>
+    no shutdown<br>
+    exit
+    </code>
+
+    <h2>Passo 3: Configuração de VPN</h2>
+    <p>Configure a VPN IPsec nos roteadores:</p>
+    <h3>Roteador 1</h3>
+    <code>
+    configure terminal<br>
+    crypto isakmp policy 10<br>
+    encr aes<br>
+    authentication pre-share<br>
+    group 5<br>
+    exit<br>
+    crypto isakmp key vpnpa55 address 1.1.1.2<br>
+    crypto ipsec transform-set VPN-SET esp-aes esp-sha-hmac<br>
+    crypto map VPN-MAP 10 ipsec-isakmp<br>
+    set peer 1.1.1.2<br>
+    set transform-set VPN-SET<br>
+    match address 110<br>
+    exit<br>
+    access-list 110 permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255<br>
+    interface gigabitethernet0/0/1<br>
+    crypto map VPN-MAP<br>
+    exit
+    </code>
+
+    <h3>Roteador 2</h3>
+    <code>
+    configure terminal<br>
+    crypto isakmp policy 10<br>
+    encr aes<br>
+    authentication pre-share<br>
+    group 5<br>
+    exit<br>
+    crypto isakmp key vpnpa55 address 1.1.1.1<br>
+    crypto ipsec transform-set VPN-SET esp-aes esp-sha-hmac<br>
+    crypto map VPN-MAP 10 ipsec-isakmp<br>
+    set peer 1.1.1.1<br>
+    set transform-set VPN-SET<br>
+    match address 110<br>
+    exit<br>
+    access-list 110 permit ip 192.168.2.0 0.0.0.255 192.168.1.0 0.0.0.255<br>
+    interface gigabitethernet0/0/1<br>
+    crypto map VPN-MAP<br>
+    exit
+    </code>
+
+    <h2>Passo 4: Testes de Conectividade</h2>
+    <ul>
+        <li>Ping entre as redes locais: Teste o comando <code>ping</code> de um PC na rede 192.168.1.0/24 para um PC na rede 192.168.2.0/24.</li>
+        <li>Verifique as configurações de VPN com o comando <code>show crypto isakmp sa</code>.</li>
+        <li>Use o comando <code>show crypto ipsec sa</code> para verificar os pacotes encapsulados.</li>
+    </ul>
+
+    <h2>Resumo Final</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Roteador</th>
+                <th>Interface</th>
+                <th>Endereço IP / Máscara</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Roteador 1</td>
+                <td>GigabitEthernet0/0/0</td>
+                <td>192.168.1.1 / 24</td>
+            </tr>
+            <tr>
+                <td>Roteador 1</td>
+                <td>GigabitEthernet0/0/1</td>
+                <td>1.1.1.1 / 30</td>
+            </tr>
+            <tr>
+                <td>Roteador 2</td>
+                <td>GigabitEthernet0/0/0</td>
+                <td>192.168.2.1 / 24</td>
+            </tr>
+            <tr>
+                <td>Roteador 2</td>
+                <td>GigabitEthernet0/0/1</td>
+                <td>1.1.1.2 / 30</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

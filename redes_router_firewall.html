@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuração de Firewall no Cisco Packet Tracer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: black;
+            border-bottom: 2px solid black;
+        }
+        h2 {
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table th, table td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+        table th {
+            background-color: black;
+            color: white;
+        }
+        code {
+            display: block;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Configuração de Firewall no Cisco Packet Tracer</h1>
+    <h2>Passo 1: Configuração Inicial</h2>
+    <p>Adicione os dispositivos necessários ao Cisco Packet Tracer:</p>
+    <ul>
+        <li>Um roteador com 2 interfaces.</li>
+        <li>Um switch para conectar dispositivos na rede interna.</li>
+        <li>PCs ou laptops para simular dispositivos finais.</li>
+        <li>Servidor opcional para testes e monitoramento.</li>
+    </ul>
+
+    <h2>Passo 2: Configuração de Endereços IP</h2>
+    <p>Configure as interfaces do roteador e os dispositivos conectados:</p>
+    <h3>Roteador</h3>
+    <code>
+    enable<br>
+    configure terminal<br>
+    interface gigabitethernet0/0/0<br>
+    ip address 192.168.1.1 255.255.255.0<br>
+    no shutdown<br>
+    exit<br>
+    interface gigabitethernet0/0/1<br>
+    ip address 10.0.0.1 255.255.255.0<br>
+    no shutdown<br>
+    exit
+    </code>
+
+    <h3>PCs</h3>
+    <ul>
+        <li>PC1 (Rede Interna): IP 192.168.1.2, Máscara 255.255.255.0, Gateway 192.168.1.1.</li>
+        <li>PC2 (Rede Externa): IP 10.0.0.2, Máscara 255.255.255.0, Gateway 10.0.0.1.</li>
+    </ul>
+
+    <h2>Passo 3: Máscaras Curinga</h2>
+    <p>Entenda o funcionamento das máscaras curinga usadas nas ACLs:</p>
+    <ul>
+        <li><strong>0.0.0.255</strong>: Representa todos os IPs em <code>192.168.1.0 a 192.168.1.255</code>.</li>
+        <li><strong>0.0.0.0</strong>: Representa um único endereço IP.</li>
+        <li><strong>255.255.255.255</strong>: Abrange todos os endereços.</li>
+    </ul>
+
+    <h2>Passo 4: Configuração de Regras de Firewall</h2>
+    <p>Crie as ACLs para controlar o tráfego:</p>
+    <code>
+    configure terminal<br>
+    access-list 100 deny icmp any any<br>
+    access-list 100 deny tcp any any eq 23<br>
+    access-list 100 deny tcp any 192.168.1.0 0.0.0.255 eq 80<br>
+    access-list 100 permit ip 192.168.1.0 0.0.0.255 10.0.0.0 0.0.0.255<br>
+    access-list 100 permit ip any any
+    </code>
+
+    <h2>Passo 5: Aplicação das ACLs</h2>
+    <p>Associe as ACLs às interfaces do roteador:</p>
+    <code>
+    interface gigabitethernet0/0/0<br>
+    ip access-group 100 in<br>
+    exit<br>
+    interface gigabitethernet0/0/1<br>
+    ip access-group 100 out<br>
+    exit
+    </code>
+
+    <h2>Passo 6: Testes de Conectividade</h2>
+    <ul>
+        <li>Ping entre redes: Teste o comando <code>ping</code>. ICMP deve ser bloqueado.</li>
+        <li>Teste de Telnet: Tente usar Telnet. Deve ser bloqueado.</li>
+        <li>Teste de HTTP: Configure um servidor HTTP na rede interna e externa.</li>
+        <li>Simulation Mode: Analise o tráfego bloqueado e permitido.</li>
+    </ul>
+
+    <h2>Passo 7: Explicação do Comando <code>ip access-group</code></h2>
+    <p><code>ip access-group 100 in</code>: Controla o tráfego que entra na interface.</p>
+    <p><code>ip access-group 100 out</code>: Controla o tráfego que sai da interface.</p>
+
+    <h2>Resumo Final</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Interface</th>
+                <th>Rede Associada</th>
+                <th>Endereço IP / Máscara</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GigabitEthernet0/0/0</td>
+                <td>Rede Interna</td>
+                <td>192.168.1.1 / 24</td>
+            </tr>
+            <tr>
+                <td>GigabitEthernet0/0/1</td>
+                <td>Rede Externa</td>
+                <td>10.0.0.1 / 24</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
