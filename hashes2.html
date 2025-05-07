@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: Gerando Identificadores Únicos com Hashes em Python</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            border-bottom: 2px solid black;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-left: 5px solid black;
+            overflow-x: auto;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tutorial: Gerando Identificadores Únicos com Hashes em Python</h1>
+    
+    <h2>1. Introdução</h2>
+    <p>Em diversas aplicações, é essencial garantir que cada usuário, transação ou registro possua um **identificador único**. Podemos utilizar **hashes** para gerar esses identificadores de forma eficiente e sem necessidade de números sequenciais.</p>
+    
+    <h2>2. Código Python</h2>
+    <p>O código abaixo gera um **ID único** para usuários com **MD5**, combinando nomes com um número aleatório:</p>
+
+    <pre>
+import hashlib
+import uuid
+
+def gerar_id_unico(nome_usuario):
+    identificador = nome_usuario + str(uuid.uuid4())  # Adiciona um número aleatório
+    return hashlib.md5(identificador.encode()).hexdigest()  # Gera hash MD5
+
+# Exemplo de uso
+print("ID do usuário:", gerar_id_unico("Max"))
+print("ID do usuário:", gerar_id_unico("Alice"))
+    </pre>
+
+    <h2>3. Explicação da Lógica</h2>
+    <p>Este código combina o **nome do usuário** com um número aleatório gerado pelo **UUID**, evitando que dois usuários recebam o mesmo ID. Em seguida, usa **MD5** para criar uma string compacta e única.</p>
+    
+    <ul>
+        <li>O **UUID (Universally Unique Identifier)** gera um número aleatório baseado na hora e em outras variáveis.</li>
+        <li>O **MD5** transforma esse número em um **hash fixo de 128 bits**.</li>
+        <li>O ID final será sempre **único**, garantindo segurança e consistência no banco de dados.</li>
+    </ul>
+
+    <h2>4. Melhorias Possíveis</h2>
+    <p>Podemos aprimorar esse sistema de geração de identificadores com:</p>
+    <ul>
+        <li>Substituir **MD5** por um algoritmo mais seguro, como **SHA-256**.</li>
+        <li>Armazenar os IDs em um banco de dados **MySQL** para consultas futuras.</li>
+        <li>Gerar **IDs baseados em tempo** para rastrear quando cada usuário foi criado.</li>
+    </ul>
+
+    <h2>5. Moral da História</h2>
+    <p>Por que tudo isso importa? Em sistemas reais, IDs únicos são essenciais para evitar **duplicações**, garantir **segurança** e permitir auditorias. Utilizar **hashes e UUIDs** evita problemas comuns como:</p>
+
+    <ul>
+        <li>Colisões em IDs gerados manualmente.</li>
+        <li>Fraudes ou manipulações em registros.</li>
+        <li>Necessidade de controle centralizado para criar identificadores.</li>
+    </ul>
+
+    <p>Com este tutorial, você pode aplicar conceitos de **segurança** e **organização de dados** de maneira eficaz, garantindo que seu sistema seja mais **robusto e confiável**. 🚀</p>
+
+</body>
+</html>

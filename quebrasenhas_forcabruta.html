@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quebra de Senhas com Força Bruta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 40px;
+        }
+        h1, h2 {
+            border-bottom: 2px solid black;
+            padding-bottom: 5px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .code {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-left: 5px solid black;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quebra de Senhas com Força Bruta</h1>
+
+        <h2>1. O Que é um Ataque de Força Bruta?</h2>
+        <p>Força bruta é um método de ataque onde um invasor testa todas as possíveis combinações de senhas até encontrar a correta.</p>
+
+        <h2>2. Como Funciona?</h2>
+        <p>O ataque pode ser feito de duas formas principais:</p>
+        <ul>
+            <li><strong>Ataque baseado em dicionário:</strong> Testa senhas comuns armazenadas em listas.</li>
+            <li><strong>Ataque exaustivo:</strong> Gera todas as combinações possíveis de caracteres.</li>
+        </ul>
+
+        <h2>3. Código em Python: Simulando um Ataque</h2>
+        <p>Este script simula um ataque de força bruta contra uma senha **hash** usando MD5.</p>
+        <div class="code">
+            <code>
+import hashlib
+
+# Senha alvo (armazenada como hash MD5)
+senha_alvo = hashlib.md5("segura123".encode()).hexdigest()
+print(f"Hash da senha alvo: {senha_alvo}")
+
+# Lista de senhas comuns
+dicionario = ["123456", "senha123", "admin", "segura123", "qwerty"]
+
+# Testando senhas do dicionário
+for senha in dicionario:
+    hash_senha = hashlib.md5(senha.encode()).hexdigest()
+    print(f"Tentando: {senha} -> {hash_senha}")
+
+    if hash_senha == senha_alvo:
+        print(f"Senha encontrada! A senha é: {senha}")
+        break
+else:
+    print("Senha não encontrada no dicionário.")
+            </code>
+        </div>
+
+        <h2>4. Estratégias de Mitigação</h2>
+        <p>Para proteger sistemas contra ataques de força bruta:</p>
+        <ul>
+            <li><strong>Usar hashing seguro:</strong> Evite MD5 ou SHA-1, prefira bcrypt ou Argon2.</li>
+            <li><strong>Implementar limite de tentativas:</strong> Após várias tentativas inválidas, bloquear o usuário.</li>
+            <li><strong>Usar autenticação multifator:</strong> Senhas fortes combinadas com métodos secundários.</li>
+        </ul>
+
+        <h2>5. Conclusão</h2>
+        <p>Este tutorial mostra como um ataque de força bruta funciona e como evitar vulnerabilidades em sistemas de login.</p>
+    </div>
+</body>
+</html>

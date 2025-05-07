@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: Auditoria de Integridade com Hashes em Python e MySQL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            border-bottom: 2px solid black;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-left: 5px solid black;
+            overflow-x: auto;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tutorial: Auditoria de Integridade com Hashes em Python e MySQL</h1>
+    
+    <h2>1. Introdução</h2>
+    <p>Este tutorial ensina como realizar uma auditoria de integridade de arquivos usando **funções hash** e armazenando os resultados em um banco de dados **MySQL**.</p>
+    
+    <h2>2. Código Python</h2>
+    <p>O código abaixo percorre um diretório, calcula os **hashes** dos arquivos e armazena os resultados no banco de dados:</p>
+
+    <pre>
+import hashlib
+import os
+import mysql.connector
+
+# Configurar conexão com MySQL
+conexao = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="sua_senha",
+    database="auditoria"
+)
+cursor = conexao.cursor()
+
+# Criar tabela caso não exista
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS auditoria (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        arquivo VARCHAR(255),
+        hash VARCHAR(64),
+        data TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+""")
+conexao.commit()
+
+def calcular_hash(arquivo, algoritmo="sha256"):
+    try:
+        hasher = hashlib.new(algoritmo)
+        with open(arquivo, "rb") as f:
+            while chunk := f.read(8192):
+                hasher.update(chunk)
+        return hasher.hexdigest()
+    except FileNotFoundError:
+        return None
+
+def auditoria_diretorio(diretorio):
+    print(f"Auditando integridade dos arquivos em: {diretorio}\n")
+
+    for arquivo in os.listdir(diretorio):
+        caminho_arquivo = os.path.join(diretorio, arquivo)
+        if os.path.isfile(caminho_arquivo):
+            hash_atual = calcular_hash(caminho_arquivo)
+            cursor.execute("INSERT INTO auditoria (arquivo, hash) VALUES (%s, %s)", (arquivo, hash_atual))
+            conexao.commit()
+            print(f"Arquivo: {arquivo} - Hash armazenado!")
+
+# Modifique o caminho conforme necessário
+auditoria_diretorio("C:/Users/Public")
+
+# Fechar conexão
+cursor.close()
+conexao.close()
+    </pre>
+
+    <h2>3. Lógica dos Algoritmos de Hash</h2>
+    <p>O **SHA-256** gera um valor único para cada arquivo. Se um arquivo for **alterado**, o hash muda completamente.</p>
+    
+    <ul>
+        <li>Lê o arquivo em **blocos de 8192 bytes** para evitar consumo excessivo de memória.</li>
+        <li>Calcula e retorna o hash.</li>
+        <li>Armazena os hashes no banco de dados para auditorias futuras.</li>
+    </ul>
+
+    <h2>4. Testando a Auditoria</h2>
+    <p>Para comparar os hashes anteriores com novos, execute este código:</p>
+
+    <pre>
+# Comparação de hashes no banco de dados
+def verificar_alteracoes():
+    cursor.execute("SELECT arquivo, hash FROM auditoria")
+    registros = cursor.fetchall()
+    
+    for arquivo, hash_antigo in registros:
+        hash_novo = calcular_hash(arquivo)
+        if hash_novo and hash_antigo != hash_novo:
+            print(f"⚠ Arquivo {arquivo} foi modificado!")
+
+verificar_alteracoes()
+    </pre>
+
+    <h2>5. Melhorias Possíveis</h2>
+    <p>Além do código atual, podemos adicionar funcionalidades como:</p>
+    <ul>
+        <li>Gerar um **log em arquivo** para cada auditoria realizada.</li>
+        <li>Permitir auditorias com múltiplos algoritmos (**MD5, SHA-1, SHA-256**).</li>
+        <li>Criar um painel em **HTML** para visualizar os resultados via navegador.</li>
+    </ul>
+
+    <h2>Conclusão</h2>
+    <p>Esse tutorial permite realizar auditorias de integridade com **Python e MySQL**, garantindo que arquivos não sejam alterados sem rastreamento. 🚀</p>
+
+</body>
+</html>

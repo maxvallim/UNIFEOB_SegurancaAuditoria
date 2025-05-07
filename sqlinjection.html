@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Injection: Exploração e Prevenção</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 40px;
+        }
+        h1, h2 {
+            border-bottom: 2px solid black;
+            padding-bottom: 5px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .code {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-left: 5px solid black;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SQL Injection: Exploração e Prevenção</h1>
+
+        <h2>1. O Que é SQL Injection?</h2>
+        <p>SQL Injection é um ataque onde um invasor manipula entradas de usuário para modificar comandos SQL no banco de dados.</p>
+
+        <h2>2. Configuração do Banco MySQL</h2>
+        <p>Criação de um banco vulnerável para demonstração do ataque.</p>
+        <div class="code">
+            <code>
+CREATE DATABASE testdb;
+USE testdb;
+
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    admin INT DEFAULT 0
+);
+
+INSERT INTO users (username, password, admin) VALUES 
+('user1', 'senha123', 0),
+('admin', 'adminpass', 1);
+            </code>
+        </div>
+
+        <h2>3. Código Vulnerável em Python</h2>
+        <p>Este código permite SQL Injection porque a entrada do usuário é concatenada diretamente na query:</p>
+        <div class="code">
+            <code>
+import mysql.connector
+
+# Conectar ao banco
+conn = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="senha123",
+    database="testdb"
+)
+cursor = conn.cursor()
+
+user_input = input("Digite seu nome de usuário: ")
+query = f"SELECT * FROM users WHERE username = '{user_input}'"
+
+print(f"Consulta SQL gerada: {query}")  # Exibir a consulta para entender o ataque
+cursor.execute(query)
+result = cursor.fetchall()
+
+if result:
+    print("Login bem-sucedido!")
+else:
+    print("Usuário não encontrado.")
+
+conn.close()
+            </code>
+        </div>
+
+        <h2>4. Exploração da Vulnerabilidade</h2>
+        <p>A entrada do usuário pode modificar a estrutura do SQL, permitindo ataques:</p>
+
+        <h3>4.1 Bypass de Autenticação</h3>
+        <div class="code">
+            <code>
+' OR '1'='1' --
+            </code>
+        </div>
+        <p>Isso transforma a consulta em:</p>
+        <div class="code">
+            <code>
+SELECT * FROM users WHERE username = '' OR '1'='1' --'
+            </code>
+        </div>
+        <p>A condição `OR '1'='1'` é sempre verdadeira, permitindo login sem senha!</p>
+
+        <h3>4.2 DROP DATABASE - Destruição Total</h3>
+        <p>Um atacante pode injetar SQL para **dropar todo o banco de dados**, eliminando todas as tabelas e dados armazenados:</p>
+        <div class="code">
+            <code>
+' ; DROP DATABASE testdb --
+            </code>
+        </div>
+        <p>Isso transforma a consulta original em:</p>
+        <div class="code">
+            <code>
+SELECT * FROM users WHERE username = ''; 
+DROP DATABASE testdb --'
+            </code>
+        </div>
+        <p>⚠️ Isso **deleta completamente o banco de dados**! Aplicações vulneráveis podem perder **todos os seus dados** instantaneamente.</p>
+
+        <h2>5. Como Prevenir SQL Injection</h2>
+        <p>Use queries **parametrizadas**, garantindo que a entrada do usuário seja tratada como um **dado seguro**.</p>
+        <div class="code">
+            <code>
+import mysql.connector
+
+# Conectar ao banco
+conn = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="senha123",
+    database="testdb"
+)
+cursor = conn.cursor()
+
+user_input = input("Digite seu nome de usuário: ")
+
+# Consulta segura usando parâmetros
+query = "SELECT * FROM users WHERE username = %s"
+cursor.execute(query, (user_input,))
+
+result = cursor.fetchall()
+
+if result:
+    print("Login bem-sucedido!")
+else:
+    print("Usuário não encontrado.")
+
+conn.close()
+            </code>
+        </div>
+        <p>Com essa técnica, qualquer entrada do usuário **não altera o SQL**, impedindo ataques!</p>
+
+        <h2>6. Conclusão</h2>
+        <p>
+            SQL Injection é um dos ataques mais perigosos contra bancos de dados.
+            Com este tutorial, você aprendeu como funciona a vulnerabilidade, como explorá-la
+            e, mais importante, como **proteger sua aplicação** contra ameaças.
+        </p>
+    </div>
+</body>
+</html>

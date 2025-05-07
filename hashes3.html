@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: Segurança com Hashes em Python</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            border-bottom: 2px solid black;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-left: 5px solid black;
+            overflow-x: auto;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tutorial: Segurança com Hashes em Python</h1>
+    
+    <h2>1. Introdução</h2>
+    <p>Os **hashes** são fundamentais na segurança digital. Eles ajudam a proteger **senhas**, validar **dados** e garantir que a informação armazenada seja **imutável**.</p>
+    
+    <h2>2. Proteção de Senhas</h2>
+    <p>Um sistema de autenticação deve armazenar senhas como **hashes**, nunca em texto puro. Isso evita que um atacante tenha acesso direto às credenciais.</p>
+    
+    <pre>
+import hashlib
+
+def gerar_hash_senha(senha):
+    return hashlib.sha256(senha.encode()).hexdigest()  # Protegendo com SHA-256
+
+senha_usuario = input("Digite sua senha: ")
+hash_armazenado = gerar_hash_senha("senha_secreta")  # Simulação de senha armazenada
+
+if gerar_hash_senha(senha_usuario) == hash_armazenado:
+    print("✅ Acesso permitido!")
+else:
+    print("❌ Senha incorreta!")
+    </pre>
+
+    <h2>3. Verificação de Integridade</h2>
+    <p>Hashes também são usados para garantir que dados confidenciais não foram corrompidos ou adulterados.</p>
+
+    <pre>
+import hashlib
+
+def verificar_integridade(arquivo, hash_esperado):
+    hash_calculado = hashlib.sha256(open(arquivo, "rb").read()).hexdigest()
+    return hash_calculado == hash_esperado
+
+hash_original = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"  # Exemplo
+print("Integridade válida:", verificar_integridade("dados.txt", hash_original))
+    </pre>
+
+    <h2>4. Melhorias e Aplicações</h2>
+    <p>Podemos melhorar o sistema de segurança com:</p>
+    <ul>
+        <li>Uso de **salts** para impedir ataques de tabelas pré-calculadas.</li>
+        <li>Armazenamento seguro em **banco de dados criptografado**.</li>
+        <li>Implementação de **hashing múltiplo** para dificultar engenharia reversa.</li>
+    </ul>
+
+    <h2>5. Moral da História</h2>
+    <p>O uso de hashes na segurança digital impede vazamento de senhas, protege arquivos confidenciais e garante a integridade de sistemas. Em um mundo conectado, esses princípios são essenciais para qualquer aplicação segura. 🚀</p>
+
+</body>
+</html>

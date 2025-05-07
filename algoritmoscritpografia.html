@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio de Criptografia: Cifra de César</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 40px;
+        }
+        h1, h2 {
+            border-bottom: 2px solid black;
+            padding-bottom: 5px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .code {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-left: 5px solid black;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Desafio: Decifre a Mensagem Secreta!</h1>
+
+        <h2>1. Objetivo</h2>
+        <p>O desafio consiste em <strong>descriptografar uma mensagem oculta</strong>, protegida pela <strong>Cifra de César</strong>.</p>
+
+        <h2>2. Regras do Desafio</h2>
+        <ul>
+            <li>Você recebe uma <strong>mensagem criptografada</strong>.</li>
+            <li>O método de cifragem usado foi a <strong>Cifra de César</strong> com um deslocamento secreto.</li>
+            <li>Seu objetivo é <strong>descobrir o deslocamento correto</strong> e recuperar a mensagem original!</li>
+        </ul>
+
+        <h2>3. Código Python do Desafio</h2>
+        <p>Use seu conhecimento em criptografia para revelar a mensagem abaixo.</p>
+        <div class="code">
+            <code>
+# Mensagem criptografada (os alunos devem descobrir o deslocamento correto)
+mensagem_cifrada = "Yrmn yjxy nx Fynajw Ktw Fuwtrj!"
+
+def cifra_de_cesar(texto, deslocamento):
+    resultado = ""
+    for caractere in texto:
+        if caractere.isalpha():
+            codigo = ord(caractere)
+            base = ord('A') if caractere.isupper() else ord('a')
+            resultado += chr((codigo - base - deslocamento) % 26 + base)
+        else:
+            resultado += caractere
+    return resultado
+
+# Os alunos devem testar diferentes valores de deslocamento para recuperar a mensagem!
+for deslocamento in range(1, 26):
+    tentativa = cifra_de_cesar(mensagem_cifrada, deslocamento)
+    print(f"Tentativa com deslocamento {deslocamento}: {tentativa}")
+            </code>
+        </div>
+
+        <h2>4. Dicas para Resolver o Desafio</h2>
+        <ul>
+            <li>A Cifra de César usa um <strong>deslocamento</strong> para modificar as letras.</li>
+            <li>Teste diferentes valores de deslocamento até a mensagem se tornar legível!</li>
+            <li>Uma dica: O deslocamento correto está entre 1 e 25.</li>
+        </ul>
+
+        <h2>5. Extensões da Atividade</h2>
+        <p>Para tornar o desafio mais interessante, experimente:</p>
+        <ul>
+            <li><strong>Criptografar sua própria mensagem</strong> e desafiar um colega.</li>
+            <li><strong>Testar deslocamentos negativos</strong> para ver como afetam o texto.</li>
+            <li><strong>Implementar uma versão automatizada</strong> que tenta todas as possibilidades.</li>
+        </ul>
+
+        <h2>6. Conclusão</h2>
+        <p>Este desafio introduz conceitos básicos de criptografia e lógica. Boa sorte na missão de revelar a mensagem secreta! 🚀🔐</p>
+    </div>
+</body>
+</html>

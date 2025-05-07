@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio: Gerenciador de Senhas Seguro com Hashes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            border-bottom: 2px solid black;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-left: 5px solid black;
+            overflow-x: auto;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Desafio: Gerenciador de Senhas Seguro com Hashes</h1>
+    
+    <h2>Objetivo do Desafio</h2>
+    <p>Seu desafio é desenvolver um **sistema seguro de gerenciamento de senhas** utilizando **hashes com salt** e armazenando as credenciais em **SQLite**.</p>
+    
+    <h2>Passo 1: Criando a Base de Dados</h2>
+    <p>Antes de cadastrar usuários, devemos criar um banco de dados para armazenar as senhas de forma protegida.</p>
+    
+    <pre>
+import sqlite3
+
+# Criar banco de dados SQLite
+conexao = sqlite3.connect("usuarios.db")
+cursor = conexao.cursor()
+
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE,
+        senha_hash TEXT,
+        salt TEXT
+    )
+""")
+conexao.commit()
+cursor.close()
+conexao.close()
+    </pre>
+
+    <h2>Passo 2: Cadastrando Usuários com Hash e Salt</h2>
+    <p>Implemente a função de **cadastro de usuários**, gerando um **salt aleatório** e armazenando o **hash da senha**.</p>
+    
+    <pre>
+import hashlib
+import os
+import sqlite3
+
+def gerar_hash_senha(senha):
+    salt = os.urandom(16).hex()  # Salt aleatório
+    senha_com_salt = senha + salt
+    senha_hash = hashlib.sha256(senha_com_salt.encode()).hexdigest()
+    return senha_hash, salt
+
+def cadastrar_usuario(username, senha):
+    conexao = sqlite3.connect("usuarios.db")
+    cursor = conexao.cursor()
+
+    senha_hash, salt = gerar_hash_senha(senha)
+    cursor.execute("INSERT INTO usuarios (username, senha_hash, salt) VALUES (?, ?, ?)", (username, senha_hash, salt))
+    conexao.commit()
+    print(f"✅ Usuário {username} cadastrado com sucesso!")
+
+    cursor.close()
+    conexao.close()
+
+# Teste de cadastro
+cadastrar_usuario("max", "senha_super_secreta")
+    </pre>
+
+    <h2>Passo 3: Autenticando Usuários</h2>
+    <p>Agora implemente uma função para **verificar senhas**, comparando o hash gerado com o armazenado no banco de dados.</p>
+
+    <pre>
+def autenticar_usuario(username, senha):
+    conexao = sqlite3.connect("usuarios.db")
+    cursor = conexao.cursor()
+    
+    cursor.execute("SELECT senha_hash, salt FROM usuarios WHERE username = ?", (username,))
+    resultado = cursor.fetchone()
+    
+    if resultado:
+        senha_hash_armazenado, salt_armazenado = resultado
+        senha_teste = hashlib.sha256((senha + salt_armazenado).encode()).hexdigest()
+        
+        if senha_teste == senha_hash_armazenado:
+            print("✅ Acesso permitido!")
+        else:
+            print("❌ Senha incorreta!")
+    else:
+        print("❌ Usuário não encontrado.")
+
+    cursor.close()
+    conexao.close()
+
+# Teste de autenticação
+autenticar_usuario("max", "senha_super_secreta")
+    </pre>
+
+    <h2>Passo 4: Melhorias Extras</h2>
+    <p>Após implementar o básico, tente aprimorar seu sistema:</p>
+    <ul>
+        <li>✅ Adicione critérios de senha forte (mínimo de caracteres, símbolos e números).</li>
+        <li>✅ Crie um sistema de **recuperação de senha** baseado em hashes e tokens.</li>
+        <li>✅ Integre com uma **interface web** para cadastro e login.</li>
+    </ul>
+
+    <h2>Moral da História</h2>
+    <p>O uso de **hashes** e **salts** protege senhas contra ataques de força bruta e vazamentos de dados. Esse método é essencial em qualquer sistema que manipula informações sensíveis.</p>
+
+    <h2>Conclusão</h2>
+    <p>Agora é sua vez! Desenvolva o gerenciador de senhas seguro e implemente melhorias para tornar seu sistema **mais robusto e seguro**. 🚀</p>
+
+</body>
+</html>

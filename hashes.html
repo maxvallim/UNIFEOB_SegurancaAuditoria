@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: Auditoria de Integridade com Hashes em Python</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            border-bottom: 2px solid black;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-left: 5px solid black;
+            overflow-x: auto;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tutorial: Auditoria de Integridade com Hashes em Python</h1>
+    
+    <h2>1. Introdução</h2>
+    <p>Este tutorial ensina como realizar uma auditoria de integridade de arquivos usando **funções hash**. Um **hash** é um valor único gerado a partir de um arquivo, permitindo verificar se ele foi alterado.</p>
+
+    <h2>2. Código Python</h2>
+    <p>O código abaixo percorre um diretório e calcula os **hashes** dos arquivos usando o algoritmo **SHA-256**:</p>
+    
+    <pre>
+import hashlib
+import os
+
+def calcular_hash(arquivo, algoritmo="sha256"):
+    try:
+        hasher = hashlib.new(algoritmo)
+        with open(arquivo, "rb") as f:
+            while chunk := f.read(8192):
+                hasher.update(chunk)
+        return hasher.hexdigest()
+    except FileNotFoundError:
+        return None
+
+def auditoria_diretorio(diretorio):
+    print(f"Auditando integridade dos arquivos em: {diretorio}\n")
+    hashes = {}
+
+    for arquivo in os.listdir(diretorio):
+        caminho_arquivo = os.path.join(diretorio, arquivo)
+        if os.path.isfile(caminho_arquivo):
+            hash_atual = calcular_hash(caminho_arquivo)
+            hashes[arquivo] = hash_atual
+            print(f"Arquivo: {arquivo} - Hash: {hash_atual}")
+
+    return hashes
+    </pre>
+
+    <h2>3. Lógica dos Algoritmos de Hash</h2>
+    <p>O código usa o **SHA-256**, um algoritmo que gera uma sequência única de 256 bits para cada arquivo. Se um arquivo for **modificado**, seu hash será totalmente diferente.</p>
+    
+    <p>Passos principais do algoritmo:</p>
+    <ul>
+        <li>Lê o arquivo em **blocos de 8192 bytes** para evitar consumo excessivo de memória.</li>
+        <li>Atualiza o hash para cada bloco lido.</li>
+        <li>Retorna o hash final do arquivo.</li>
+    </ul>
+
+    <h2>4. Testando a Auditoria</h2>
+    <p>Para usar o script, basta definir um diretório e comparar os hashes antes e depois de alterações:</p>
+    
+    <pre>
+# Executar a auditoria inicial
+hashes_anteriores = auditoria_diretorio("C:/Users/Public")
+
+# Após modificar arquivos, executar novamente para comparar os resultados
+hashes_novos = auditoria_diretorio("C:/Users/Public")
+
+# Comparação dos hashes
+for arquivo in hashes_anteriores:
+    if hashes_anteriores[arquivo] != hashes_novos.get(arquivo):
+        print(f"⚠ Arquivo {arquivo} foi modificado!")
+    </pre>
+
+    <h2>5. Melhorias Possíveis</h2>
+    <p>Algumas sugestões para aprimorar o script:</p>
+    <ul>
+        <li>Registrar hashes em um **arquivo de log** para auditorias futuras.</li>
+        <li>Permitir seleção de diferentes algoritmos de hash (**MD5, SHA-1, SHA-256**).</li>
+        <li>Integrar com um banco de dados para auditoria contínua.</li>
+    </ul>
+
+    <h2>Conclusão</h2>
+    <p>Com este código, é possível realizar auditorias de integridade em sistemas e identificar alterações suspeitas em arquivos. 🚀</p>
+
+</body>
+</html>
