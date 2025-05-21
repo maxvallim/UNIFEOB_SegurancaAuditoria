@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade: Segurança e Auditoria em Bancos de Dados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 20px;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #000;
+            color: #fff;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .question {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Atividade: Comparação de Segurança e Auditoria em Bancos de Dados</h1>
+
+    <div class="section">
+        <h2>Objetivo</h2>
+        <p>Compreender as abordagens de segurança e auditoria nos bancos de dados MySQL, MongoDB, TinyDB, SQLite, DuckDB, Firebase e SQL Server, explorando suas vantagens, limitações e impactos na proteção da informação.</p>
+    </div>
+
+    <div class="section">
+        <h2>Conceitos Fundamentais</h2>
+        <p><strong>Segurança:</strong> Proteção contra acessos não autorizados, uso indevido de dados e ataques cibernéticos. Engloba autenticação, criptografia e controle de acesso.</p>
+        <p><strong>Auditoria:</strong> Registro e análise de operações realizadas no banco de dados. Permite monitorar acessos, detectar fraudes e garantir conformidade regulatória.</p>
+    </div>
+
+    <div class="section">
+        <h2>Comparação dos Bancos de Dados</h2>
+        <table>
+            <tr>
+                <th>Banco de Dados</th>
+                <th>Medidas de Segurança</th>
+                <th>Auditoria</th>
+                <th>Pontos Críticos</th>
+            </tr>
+            <tr>
+                <td>MySQL</td>
+                <td>Controle de acesso baseado em usuários, criptografia SSL/TLS</td>
+                <td>Logs de consultas e alterações via binlog e audit plugin</td>
+                <td>Requer configuração manual aprofundada</td>
+            </tr>
+            <tr>
+                <td>MongoDB</td>
+                <td>Permissões baseadas em roles, criptografia em trânsito e em repouso</td>
+                <td>Registros de acesso e eventos por meio de logs</td>
+                <td>Auditoria menos detalhada que bancos relacionais</td>
+            </tr>
+            <tr>
+                <td>TinyDB</td>
+                <td>Sem autenticação nativa, dependência de segurança externa</td>
+                <td>Sem suporte embutido para auditoria</td>
+                <td>Não indicado para aplicações críticas</td>
+            </tr>
+            <tr>
+                <td>SQLite</td>
+                <td>Proteção básica de arquivo e autenticação leve</td>
+                <td>Logs externos para rastreamento de ações</td>
+                <td>Falta suporte nativo para auditoria avançada</td>
+            </tr>
+            <tr>
+                <td>DuckDB</td>
+                <td>Segurança centrada no ambiente local</td>
+                <td>Logs internos de execução</td>
+                <td>Sem auditoria detalhada para aplicações distribuídas</td>
+            </tr>
+            <tr>
+                <td>Firebase</td>
+                <td>Autenticação via Google e permissões granularizadas</td>
+                <td>Registros de eventos no painel Firebase</td>
+                <td>Dependência dos serviços do Google</td>
+            </tr>
+            <tr>
+                <td>SQL Server</td>
+                <td>Controle de acesso avançado, criptografia granular</td>
+                <td>Logs detalhados, trilhas de auditoria configuráveis</td>
+                <td>Auditoria completa disponível apenas em edições premium</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Reflexão Crítica</h2>
+        <p class="question">1. Qual banco de dados apresenta maior robustez na segurança?</p>
+        <p class="question">2. Quais desafios a auditoria pode ajudar a resolver que a segurança sozinha não consegue?</p>
+        <p class="question">3. Quais dificuldades existem na implementação de auditoria eficiente?</p>
+        <p class="question">4. Como segurança e auditoria se complementam?</p>
+    </div>
+
+    <div class="section">
+        <h2>Relatório Técnico</h2>
+        <p>Elabore um relatório técnico detalhado para analisar e recomendar a melhor opção de banco de dados para uma empresa do setor financeiro, considerando aspectos essenciais de segurança e auditoria. O relatório deve apresentar uma avaliação comparativa das alternativas disponíveis no mercado, destacando suas características em termos de proteção de dados, conformidade regulatória e mecanismos de auditoria que garantam transparência e rastreabilidade. Ao final, apresente uma recomendação fundamentada, justificando a escolha com base nos critérios estabelecidos, para que a empresa possa tomar uma decisão segura e estratégica em relação à sua infraestrutura de armazenamento e gestão de dados.</p>
+    </div>
+
+</body>
+</html>
