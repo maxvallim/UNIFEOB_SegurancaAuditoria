@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Hierarquia de Usuários no MySQL com Roles</title>
+    <style>
+        body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        p, li {
+            margin-bottom: 15px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 5px;
+            display: block;
+            margin-bottom: 20px;
+            border-left: 3px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hierarquia de Usuários no MySQL com Roles</h1>
+    <p>A gestão de usuários em sistemas de banco de dados é um dos pilares da segurança da informação. Em ambientes corporativos, é comum que diferentes usuários tenham diferentes níveis de acesso, conforme suas responsabilidades. O MySQL oferece um recurso poderoso chamado <strong>Roles</strong>, que permite agrupar permissões e atribuí-las de forma organizada e segura.</p>
+
+    <p>Roles facilitam a administração de permissões, promovem consistência, reduzem erros e são fundamentais para auditorias. Ao definir uma hierarquia de usuários, é possível garantir que cada colaborador tenha acesso apenas ao que é necessário para sua função, protegendo dados sensíveis e evitando ações indevidas.</p>
+
+    <h2>1. Criando Roles</h2>
+    <p>Vamos criar três roles representando diferentes níveis hierárquicos: <code>diretor</code>, <code>gerente</code> e <code>operador</code>.</p>
+    <code>
+        CREATE ROLE 'diretor';<br>
+        CREATE ROLE 'gerente';<br>
+        CREATE ROLE 'operador';
+    </code>
+
+    <h2>2. Atribuindo Permissões às Roles</h2>
+    <p>Definimos permissões específicas para cada role, de acordo com sua responsabilidade:</p>
+    <code>
+        GRANT ALL ON sistema.* TO 'diretor';<br>
+        GRANT SELECT, INSERT, UPDATE ON sistema.vendas TO 'gerente';<br>
+        GRANT SELECT ON sistema.vendas TO 'operador';
+    </code>
+
+    <h2>3. Criando Usuários e Atribuindo Roles</h2>
+    <p>Agora criamos os usuários e associamos cada um à sua respectiva role:</p>
+    <code>
+        CREATE USER 'ana'@'localhost' IDENTIFIED BY 'senha123';<br>
+        CREATE USER 'bruno'@'localhost' IDENTIFIED BY 'senha123';<br>
+        CREATE USER 'carla'@'localhost' IDENTIFIED BY 'senha123';<br><br>
+        GRANT 'diretor' TO 'ana'@'localhost';<br>
+        GRANT 'gerente' TO 'bruno'@'localhost';<br>
+        GRANT 'operador' TO 'carla'@'localhost';<br><br>
+        SET DEFAULT ROLE ALL TO 'ana'@'localhost', 'bruno'@'localhost', 'carla'@'localhost';
+    </code>
+
+    <h2>4. Verificando Permissões</h2>
+    <p>Para verificar as permissões de um usuário:</p>
+    <code>
+        SHOW GRANTS FOR 'bruno'@'localhost';
+    </code>
+
+    <h2>5. Exercícios Práticos</h2>
+    <ul>
+        <li>Crie uma nova Role chamada <code>analista</code> com permissão de SELECT e UPDATE na tabela <code>clientes</code>.</li>
+        <li>Crie um usuário chamado <code>daniel</code> e atribua a ele a Role <code>analista</code>.</li>
+        <li>Verifique as permissões de <code>daniel</code> com <code>SHOW GRANTS FOR 'daniel'@'localhost';</code></li>
+        <li>Revogue a permissão de UPDATE da Role <code>analista</code> e verifique o impacto em <code>daniel</code>.</li>
+        <li>Crie um script que liste todos os usuários e suas Roles atribuídas.</li>
+        <li>Explique como o uso de Roles pode facilitar auditorias em sistemas corporativos.</li>
+    </ul>
+
+    <h2>6. Considerações Finais</h2>
+    <p>Roles são essenciais para manter a segurança, organização e rastreabilidade em sistemas com múltiplos usuários. Ao aplicar uma hierarquia bem definida, você garante que cada usuário tenha acesso apenas ao necessário, promovendo boas práticas de governança de dados.</p>
+</body>
+</html>

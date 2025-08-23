@@ -1,0 +1,291 @@
+html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial de Hierarquia de Usuários no MySQL</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        header {
+            background-color: #000;
+            color: #fff;
+            padding: 30px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #000;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #444;
+            margin-top: 25px;
+        }
+        
+        pre {
+            background-color: #000;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px 0;
+        }
+        
+        code {
+            background-color: #eee;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        .note {
+            background-color: #f0f0f0;
+            border-left: 4px solid #000;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #000;
+            color: #fff;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Tutorial de Hierarquia de Usuários no MySQL</h1>
+            <p>Implementando um sistema robusto de controle de acesso</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <section id="introducao">
+            <h2>1. Introdução</h2>
+            <p>Este tutorial aborda a implementação de um sistema de hierarquia de usuários (níveis de permissão) no MySQL, utilizando um modelo baseado em roles (grupos) e permissões.</p>
+            
+            <div class="note">
+                <strong>Importante:</strong> Este sistema pode ser adaptado para qualquer aplicação que necessite de controle de acesso granular.
+            </div>
+        </section>
+        
+        <section id="modelo-basico">
+            <h2>2. Modelo Básico de Tabelas</h2>
+            <p>Vamos começar criando as tabelas necessárias para nosso sistema:</p>
+            
+            <h3>Tabela de Grupos/Roles</h3>
+            <pre><code>CREATE TABLE user_roles (
+    role_id INT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL,
+    description VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</code></pre>
+            
+            <h3>Tabela de Usuários</h3>
+            <pre><code>CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    role_id INT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (role_id) REFERENCES user_roles(role_id)
+);</code></pre>
+            
+            <h3>Tabela de Permissões</h3>
+            <pre><code>CREATE TABLE permissions (
+    permission_id INT AUTO_INCREMENT PRIMARY KEY,
+    permission_name VARCHAR(100) NOT NULL UNIQUE,
+    description VARCHAR(255)
+);</code></pre>
+            
+            <h3>Tabela de Associação</h3>
+            <pre><code>CREATE TABLE role_permissions (
+    role_id INT,
+    permission_id INT,
+    PRIMARY KEY (role_id, permission_id),
+    FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
+    FOREIGN KEY (permission_id) REFERENCES permissions(permission_id)
+);</code></pre>
+        </section>
+        
+        <section id="dados-iniciais">
+            <h2>3. Inserindo Dados Iniciais</h2>
+            
+            <h3>Roles Básicas</h3>
+            <pre><code>INSERT INTO user_roles (role_name, description) VALUES 
+('admin', 'Administrador do sistema - acesso total'),
+('manager', 'Gerente - acesso a módulos gerenciais'),
+('user', 'Usuário regular - acesso básico'),
+('guest', 'Convidado - acesso limitado');</code></pre>
+            
+            <h3>Permissões Básicas</h3>
+            <pre><code>INSERT INTO permissions (permission_name, description) VALUES
+('create_user', 'Permissão para criar novos usuários'),
+('delete_user', 'Permissão para remover usuários'),
+('edit_content', 'Permissão para editar conteúdo'),
+('view_reports', 'Permissão para visualizar relatórios'),
+('basic_access', 'Acesso básico ao sistema');</code></pre>
+            
+            <h3>Associação de Permissões</h3>
+            <pre><code>INSERT INTO role_permissions VALUES
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), -- Admin tem todas as permissões
+(2, 3), (2, 4), (2, 5),                  -- Manager pode editar conteúdo e ver relatórios
+(3, 3), (3, 5),                           -- User pode editar conteúdo e acesso básico
+(4, 5);                                   -- Guest só tem acesso básico</code></pre>
+        </section>
+        
+        <section id="consultas">
+            <h2>4. Consultando Permissões</h2>
+            
+            <h3>Verificar Permissão Específica</h3>
+            <pre><code>SELECT u.user_id, u.username, 
+       CASE WHEN COUNT(rp.permission_id) > 0 THEN 'YES' ELSE 'NO' END AS can_create_user
+FROM users u
+LEFT JOIN role_permissions rp ON u.role_id = rp.role_id
+LEFT JOIN permissions p ON rp.permission_id = p.permission_id AND p.permission_name = 'create_user'
+WHERE u.user_id = 1
+GROUP BY u.user_id, u.username;</code></pre>
+            
+            <h3>Listar Todas as Permissões de um Usuário</h3>
+            <pre><code>SELECT p.permission_name, p.description
+FROM users u
+JOIN role_permissions rp ON u.role_id = rp.role_id
+JOIN permissions p ON rp.permission_id = p.permission_id
+WHERE u.user_id = 1;</code></pre>
+        </section>
+        
+        <section id="hierarquia-avancada">
+            <h2>5. Hierarquia Avançada (Roles Aninhadas)</h2>
+            
+            <h3>Adicionando Herança de Permissões</h3>
+            <pre><code>-- Adicionar coluna parent_role_id para hierarquia
+ALTER TABLE user_roles ADD COLUMN parent_role_id INT NULL;
+ALTER TABLE user_roles ADD FOREIGN KEY (parent_role_id) REFERENCES user_roles(role_id);
+
+-- Configurar hierarquia
+UPDATE user_roles SET parent_role_id = NULL WHERE role_id = 1; -- Admin não tem pai
+UPDATE user_roles SET parent_role_id = 1 WHERE role_id = 2;   -- Manager herda de Admin
+UPDATE user_roles SET parent_role_id = 2 WHERE role_id = 3;   -- User herda de Manager
+UPDATE user_roles SET parent_role_id = 3 WHERE role_id = 4;   -- Guest herda de User</code></pre>
+            
+            <h3>Função para Verificar Permissões com Herança</h3>
+            <pre><code>DELIMITER //
+CREATE FUNCTION has_permission(user_id INT, permission_name VARCHAR(100)) 
+RETURNS BOOLEAN
+READS SQL DATA
+BEGIN
+    DECLARE role INT;
+    DECLARE result BOOLEAN DEFAULT FALSE;
+    
+    -- Obter role do usuário
+    SELECT role_id INTO role FROM users WHERE user_id = user_id;
+    
+    -- Verificar permissão considerando hierarquia
+    WITH RECURSIVE role_hierarchy AS (
+        SELECT role_id FROM user_roles WHERE role_id = role
+        UNION ALL
+        SELECT ur.role_id 
+        FROM user_roles ur
+        JOIN role_hierarchy rh ON ur.parent_role_id = rh.role_id
+    )
+    SELECT COUNT(*) > 0 INTO result
+    FROM role_permissions rp
+    JOIN permissions p ON rp.permission_id = p.permission_id
+    JOIN role_hierarchy rh ON rp.role_id = rh.role_id
+    WHERE p.permission_name = permission_name;
+    
+    RETURN result;
+END //
+DELIMITER ;</code></pre>
+        </section>
+        
+        <section id="melhores-praticas">
+            <h2>6. Melhores Práticas</h2>
+            
+            <ul>
+                <li><strong>Princípio do menor privilégio:</strong> Conceda apenas as permissões necessárias</li>
+                <li><strong>Use transações:</strong> Para operações críticas de permissões</li>
+                <li><strong>Registre alterações:</strong> Mantenha um log de alterações de permissões</li>
+                <li><strong>Validação no aplicativo:</strong> Sempre verifique permissões no código também</li>
+                <li><strong>Evite herança complexa:</strong> Que possa dificultar a manutenção</li>
+            </ul>
+            
+            <h3>Exemplo de Tabela de Log</h3>
+            <pre><code>CREATE TABLE permission_log (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    action VARCHAR(50) NOT NULL, -- 'GRANT', 'REVOKE', 'UPDATE'
+    permission_name VARCHAR(100) NOT NULL,
+    target_user_id INT NULL, -- Usuário afetado (se aplicável)
+    executed_by INT NOT NULL, -- Quem executou a ação
+    executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (executed_by) REFERENCES users(user_id)
+);</code></pre>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Tutorial de Hierarquia de Usuários no MySQL &copy; 2023</p>
+            <p>Implemente um sistema robusto de controle de acesso em suas aplicações</p>
+        </div>
+    </footer>
+</body>
+</html>

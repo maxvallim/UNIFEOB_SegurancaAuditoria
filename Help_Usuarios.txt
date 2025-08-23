@@ -1,0 +1,25 @@
+-- Exibindo roles
+SELECT user AS role_name 
+FROM mysql.user 
+WHERE host = '%' AND authentication_string = '';
+
+-- Verificando privilegios de usuarios
+SHOW GRANTS FOR 'usuario'@'localhost';
+
+-- Excluindo roles
+DROP ROLE 'gerente';
+
+-- Excluindo usuarios
+DROP USER 'joao'@'localhost';
+DROP USER 'maria'@'%';
+
+-- listando os usuários criados
+SELECT user, host FROM mysql.user;
+
+-- verificar o usuario logado
+SELECT USER()
+SELECT CURRENT_USER()
+
+
+
+
