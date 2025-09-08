@@ -74,7 +74,7 @@
         SELECT Vendas.*
         FROM Vendas
         JOIN Usuarios ON Vendas.VendedorID = Usuarios.VendedorID
-        WHERE Usuarios.NomeUsuario = CURRENT_USER();
+        WHERE Usuarios.NomeUsuario = TRIM(SUBSTRING_INDEX(USER(), '@', 1);
     </code>
     <h3>4. Uso da View para Consultas</h3>
     <code>

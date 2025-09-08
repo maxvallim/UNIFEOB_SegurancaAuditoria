@@ -20,6 +20,13 @@ SELECT user, host FROM mysql.user;
 SELECT USER()
 SELECT CURRENT_USER()
 
+-- criando usuário
+CREATE USER 'nome_usuario'@'localhost' IDENTIFIED BY 'senha_segura';
+
+-- concedendo privilégio de leitura
+GRANT SELECT ON nome_banco.nome_tabela TO 'nome_usuario'@'localhost';
+
+
 
 
 

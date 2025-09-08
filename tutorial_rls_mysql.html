@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Tutorial RLS no MySQL</title>
+<style>
+        body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+        }
+        h1, h2, h3 {
+            color: black;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+<h1>🔐 Tutorial: Simulação de Segurança em Nível de Linha (RLS) no MySQL</h1>
+
+<h2>🧱 1. Criação das Tabelas</h2>
+<h3>Tabela Vendas</h3>
+<pre><code>CREATE TABLE Vendas (
+    VendaID INT PRIMARY KEY,
+    VendedorID INT,
+    Produto VARCHAR(50),
+    Quantidade INT,
+    Valor DECIMAL(10, 2)
+);</code></pre>
+
+<h3>Inserção de Dados</h3>
+<pre><code>INSERT INTO Vendas (VendaID, VendedorID, Produto, Quantidade, Valor)
+VALUES
+(1, 101, 'Produto A', 10, 100.00),
+(2, 102, 'Produto B', 5, 50.00),
+(3, 101, 'Produto C', 7, 70.00),
+(4, 103, 'Produto D', 3, 30.00);</code></pre>
+
+<h2>👥 2. Tabela de Usuários</h2>
+<pre><code>CREATE TABLE Usuarios (
+    UsuarioID INT PRIMARY KEY,
+    NomeUsuario VARCHAR(50),
+    VendedorID INT
+);</code></pre>
+
+<h3>Inserção de Dados</h3>
+<pre><code>INSERT INTO Usuarios (UsuarioID, NomeUsuario, VendedorID)
+VALUES
+(1, 'usuario1', 101),
+(2, 'usuario2', 102),
+(3, 'usuario3', 103);</code></pre>
+
+<h2>👓 3. Criação da View com Filtro por Usuário</h2>
+<pre><code>CREATE VIEW VendasFiltradas
+AS
+SELECT V.*
+FROM Vendas V
+JOIN Usuarios U ON V.VendedorID = U.VendedorID
+WHERE U.NomeUsuario = TRIM(SUBSTRING_INDEX(USER(), '@', 1);</code></pre>
+
+<h2>🔐 4. Criação de Usuários MySQL</h2>
+<pre><code>CREATE USER 'usuario1'@'localhost' IDENTIFIED BY 'senha1';
+CREATE USER 'usuario2'@'localhost' IDENTIFIED BY 'senha2';
+CREATE USER 'usuario3'@'localhost' IDENTIFIED BY 'senha3';</code></pre>
+
+ <h2>🛡️ 5. Concessão de Permissões</h2>
+<h3>Revogar acesso direto à tabela Vendas</h3>
+<pre><code>REVOKE ALL PRIVILEGES ON Vendas FROM 'usuario1'@'localhost';
+REVOKE ALL PRIVILEGES ON Vendas FROM 'usuario2'@'localhost';
+REVOKE ALL PRIVILEGES ON Vendas FROM 'usuario3'@'localhost';</code></pre>
+
+    <h3>Conceder acesso apenas à View</h3>
+    <pre><code>GRANT SELECT ON VendasFiltradas TO 'usuario1'@'localhost';
+GRANT SELECT ON VendasFiltradas TO 'usuario2'@'localhost';
+GRANT SELECT ON VendasFiltradas TO 'usuario3'@'localhost';</code></pre>
+
+    <h3>Aplicar as permissões</h3>
+    <pre><code>FLUSH PRIVILEGES;</code></pre>
+
+    <h2>🧪 6. Testando o Acesso</h2>
+    <pre><code>SELECT * FROM VendasFiltradas;</code></pre>
+
+    <h2>📌 Considerações Finais</h2>
+    <ul>
+        <li><strong>Segurança:</strong> garanta que os usuários só tenham acesso à view, não à tabela original.</li>
+        <li><strong>Desempenho:</strong> views com joins podem impactar performance em grandes volumes.</li>
+        <li><strong>Manutenção:</strong> mantenha a tabela <code>Usuarios</code> atualizada com os nomes reais dos usuários MySQL.</li>
+    </ul>
+</body>
+</html>
