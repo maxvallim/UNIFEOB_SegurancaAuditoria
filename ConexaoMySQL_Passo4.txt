@@ -1,0 +1,36 @@
+# 1. CONEXÃO INICIAL
+
+pip install mysql-connector-python
+
+import mysql.connector
+from mysql.connector import Error
+
+def conectar_mysql(host, usuario, senha, banco):
+    try:
+        conexao = mysql.connector.connect(
+            host=host,
+            user=usuario,
+            password=senha,
+            database=banco
+        )
+        if conexao.is_connected():
+            print("✅ Conexão estabelecida com sucesso!")
+            return conexao
+    except Error as erro:
+        print("❌ Erro ao conectar:", erro)
+        return None
+
+# Entrada do usuário
+host = input("Host do MySQL (ex: localhost): ")
+banco = input("Nome do banco de dados: ")
+usuario = input("Usuário: ")
+senha = input("Senha (atenção: será visível): ")
+
+# Conectar
+conexao = conectar_mysql(host, usuario, senha, banco)
+
+# Fechar conexão
+if conexao:
+    conexao.close()
+	
+

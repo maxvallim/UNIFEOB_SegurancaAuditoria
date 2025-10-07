@@ -1,0 +1,86 @@
+# refazendo com criptografia de senha
+pip install mysql-connector-python bcrypt
+
+
+CREATE DATABASE aulaseg;
+USE aulaseg;
+
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100),
+    login VARCHAR(50) UNIQUE,
+    senha_hash VARCHAR(100)
+);
+
+
+# gerador de senhas
+import bcrypt
+import mysql.connector
+
+def cadastrar_usuario(nome, login, senha):
+    try:
+        conexao = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="sua_senha_root",
+            database="aulaseg"
+        )
+        cursor = conexao.cursor()
+
+        # Gerar hash da senha
+        senha_hash = bcrypt.hashpw(senha.encode(), bcrypt.gensalt())
+
+        cursor.execute(
+            "INSERT INTO usuarios (nome, login, senha_hash) VALUES (%s, %s, %s)",
+            (nome, login, senha_hash)
+        )
+        conexao.commit()
+        print("✅ Usuário cadastrado com sucesso!")
+
+        cursor.close()
+        conexao.close()
+
+    except mysql.connector.Error as erro:
+        print("Erro ao cadastrar:", erro)
+
+# Exemplo de cadastro
+nome = input("Nome: ")
+login = input("Login: ")
+senha = input("Senha: ")
+cadastrar_usuario(nome, login, senha)
+
+
+#
+def autenticar_usuario(login_digitado, senha_digitada):
+    try:
+        conexao = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="sua_senha_root",
+            database="aulaseg"
+        )
+        cursor = conexao.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM usuarios WHERE login = %s", (login_digitado,))
+        usuario = cursor.fetchone()
+
+        if usuario:
+            senha_hash = usuario['senha_hash'].encode()
+            if bcrypt.checkpw(senha_digitada.encode(), senha_hash):
+                print("✅ Login bem-sucedido!")
+                print("Dados do usuário:", usuario)
+            else:
+                print("❌ Senha incorreta.")
+        else:
+            print("❌ Usuário não encontrado.")
+
+        cursor.close()
+        conexao.close()
+
+    except mysql.connector.Error as erro:
+        print("Erro na conexão:", erro)
+
+# Exemplo de login
+login = input("Login: ")
+senha = input("Senha: ")
+autenticar_usuario(login, senha)
