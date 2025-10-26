@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Tutorial: Firewall com ACL no Roteador – Cisco Packet Tracer</title>
+    <style>
+        body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            color: black;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: left;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            font-family: monospace;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Tutorial Funcional: Firewall com ACL no Roteador – Cisco Packet Tracer</h1>
+
+<h2>Etapa 1 – Topologia da Rede</h2>
+<p><strong>Dispositivos:</strong></p>
+<ul>
+    <li>1 Roteador (ex: Cisco 4321)</li>
+    <li>1 Switch</li>
+    <li>2 PCs (PC1 e PC2)</li>
+</ul>
+<p><strong>Conexões:</strong></p>
+<ul>
+    <li>PC1 → Switch → Gi0/0/0 do Roteador (Rede Interna)</li>
+    <li>PC2 → Gi0/0/1 do Roteador (Rede Externa)</li>
+</ul>
+
+<h2>Etapa 2 – Endereçamento IP</h2>
+<table>
+    <tr>
+        <th>Dispositivo</th>
+        <th>Interface</th>
+        <th>IP</th>
+        <th>Máscara</th>
+        <th>Gateway</th>
+    </tr>
+    <tr><td>PC1</td><td>FastEthernet0</td><td>192.168.1.10</td><td>255.255.255.0</td><td>192.168.1.1</td></tr>
+    <tr><td>PC2</td><td>FastEthernet0</td><td>10.0.0.10</td><td>255.255.255.0</td><td>10.0.0.1</td></tr>
+    <tr><td>Roteador</td><td>Gi0/0/0</td><td>192.168.1.1</td><td>255.255.255.0</td><td>—</td></tr>
+    <tr><td>Roteador</td><td>Gi0/0/1</td><td>10.0.0.1</td><td>255.255.255.0</td><td>—</td></tr>
+</table>
+
+<h2>Etapa 3 – Configuração do Roteador</h2>
+<pre>
+enable
+configure terminal
+
+hostname R1
+
+interface gigabitethernet0/0/0
+description LAN
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+
+interface gigabitethernet0/0/1
+description WAN
+ip address 10.0.0.1 255.255.255.0
+no shutdown
+exit
+</pre>
+
+<h2>Etapa 4 – Testes de Conectividade (Antes do Firewall)</h2>
+<ul>
+    <li>Ping de PC1 para PC2 → Deve funcionar</li>
+    <li>Ping de PC2 para PC1 → Deve funcionar</li>
+</ul>
+<p>Use o <strong>Command Prompt</strong> dos PCs:</p>
+<pre>
+ping 10.0.0.10     # do PC1 para PC2
+ping 192.168.1.10  # do PC2 para PC1
+</pre>
+
+<h2>Etapa 5 – Criar e Aplicar a ACL (Firewall)</h2>
+
+<h3>5.1 Criar a ACL</h3>
+<pre>
+configure terminal
+
+access-list 100 deny icmp any any
+access-list 100 deny tcp any 192.168.1.0 0.0.0.255 eq 80
+access-list 100 permit ip any any
+</pre>
+
+<h3>5.2 Aplicar a ACL na interface interna (entrada)</h3>
+<pre>
+interface gigabitethernet0/0/0
+ip access-group 100 in
+exit
+</pre>
+
+<h2>Etapa 6 – Testes Após o Firewall</h2>
+<table>
+    <tr>
+        <th>Teste</th>
+        <th>Resultado Esperado</th>
+    </tr>
+    <tr><td>Ping entre PC1 e PC2</td><td>❌ Bloqueado</td></tr>
+    <tr><td>HTTP de PC2 para servidor na LAN</td><td>❌ Bloqueado</td></tr>
+    <tr><td>Acesso de PC1 para PC2 (ex: ping, HTTP)</td><td>✅ Permitido</td></tr>
+    <tr><td>Outros acessos (sem ICMP ou HTTP)</td><td>✅ Permitido</td></tr>
+</table>
+
+<h2>Explicação Didática</h2>
+<ul>
+    <li>ACL 100 bloqueia ICMP (ping) entre qualquer origem e destino.</li>
+    <li>Bloqueia HTTP (porta 80) da WAN para a LAN.</li>
+    <li>Permite todo o restante do tráfego.</li>
+    <li>Aplicação na entrada da LAN controla o que entra na rede interna.</li>
+</ul>
+
+</body>
+</html>
